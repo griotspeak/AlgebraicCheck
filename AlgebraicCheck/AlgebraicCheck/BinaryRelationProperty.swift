@@ -9,28 +9,28 @@
 import SwiftCheck
 
 public protocol OrderedStructure {
-    associatedtype OpType : RelationProtocol
+    associatedtype OpType : ClosedBinaryRelationProtocol
     var relation: OpType { get }
     var algebraicProperties: [RelationProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }
 }
 
 public protocol BinaryOrderedStructure : OrderedStructure {
-    associatedtype OpType : BinaryRelationProtocol
+    associatedtype OpType : ClosedBinaryRelationProtocol
 }
 
-extension BinaryOrderedStructure {
+extension BinaryOrderedStructure where OpType.Codomain : Arbitrary {
     public var concretizedProperties: SwiftCheckProperties {
         return algebraicProperties.flatMap {
-            $0.concretize(with: relation)
+            return $0.concretize(with: relation)
         }
     }
 }
 
 public enum RelationProperty<Relation> : CustomStringConvertible
-where Relation : RelationProtocol, Relation.Operand : Arbitrary {
+where Relation : BinaryRelationProtocol/*, Relation.Domain : Arbitrary*/ {
     case total
-    case antisymmetric(equivalence: (Relation.Operand, Relation.Operand) -> Bool)
+    case antisymmetric(equivalence: (Relation.Codomain, Relation.Codomain) -> Bool)
     case transitive
     case reflexive
 
@@ -48,7 +48,7 @@ where Relation : RelationProtocol, Relation.Operand : Arbitrary {
     }
 }
 
-extension RelationProperty where Relation : BinaryRelationProtocol {
+extension RelationProperty where Relation : ClosedBinaryRelationProtocol, Relation.Codomain : Arbitrary {
     internal func concretize(with operation: Relation) -> SwiftCheckProperties {
         switch self {
         case .total:
@@ -63,15 +63,15 @@ extension RelationProperty where Relation : BinaryRelationProtocol {
     }
 
     func createTotalProperty(_ op: Relation) -> SwiftCheckProperties {
-        let property = forAll { (a: Relation.Operand, b: Relation.Operand) in
-            return op.function(a, b) || op.function(b, a)
+        let property = forAll { (a: Relation.Codomain, b: Relation.Codomain) in
+            return op.isRRelated(a, b) || op.isRRelated(b, a)
         }
         return [("total", property)]
     }
 
-    func createAntisymmetricProperty(_ op: Relation, equivalence: @escaping (Relation.Operand, Relation.Operand) -> Bool) -> SwiftCheckProperties {
-        let property = forAll { (i: Relation.Operand, j: Relation.Operand) in
-            if op.function(i, j) && op.function(j, i) {
+    func createAntisymmetricProperty(_ op: Relation, equivalence: @escaping (Relation.Codomain, Relation.Codomain) -> Bool) -> SwiftCheckProperties {
+        let property = forAll { (i: Relation.Codomain, j: Relation.Codomain) in
+            if op.isRRelated(i, j) && op.isRRelated(j, i) {
                 return equivalence(i, j)
             } else {
                 return equivalence(i, j) == false
@@ -81,9 +81,9 @@ extension RelationProperty where Relation : BinaryRelationProtocol {
     }
 
     func createTransitiveProperty(_ op: Relation) -> SwiftCheckProperties {
-        let property = forAll { (a: Relation.Operand, b: Relation.Operand, c: Relation.Operand) in
-            if op.function(a, b) && op.function(b, c) {
-                return op.function(a, c) == true
+        let property = forAll { (a: Relation.Codomain, b: Relation.Codomain, c: Relation.Codomain) -> Bool in
+            if op.isRRelated(a, b) && op.isRRelated(b, c) {
+                return op.isRRelated(a, c) == true
             } else {
                 return true
             }
@@ -91,8 +91,8 @@ extension RelationProperty where Relation : BinaryRelationProtocol {
         return [("transitive", property)]
     }
     func createReflexiveProperty(_ op: Relation) -> SwiftCheckProperties {
-        let property = forAll { (a: Relation.Operand) in
-            op.function(a, a)
+        let property = forAll { (a: Relation.Codomain) in
+            op.isRRelated(a, a)
         }
         return [("reflexive", property)]
     }

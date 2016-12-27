@@ -1,7 +1,7 @@
 import SwiftCheck
 
 public protocol AlgebraicStructure {
-    associatedtype OpType : Transform
+    associatedtype OpType : ClosedBinary
     var operation: OpType { get }
     var algebraicProperties: [AlgebraicProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }

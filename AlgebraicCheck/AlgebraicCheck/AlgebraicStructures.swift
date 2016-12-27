@@ -4,26 +4,30 @@ public typealias SwiftCheckProperties = [(description: String, Property)]
 
 // MARK: -
 
-public protocol RelationProtocol {
-    associatedtype Operand : Arbitrary
+public protocol BinaryRelationProtocol {
+    associatedtype Domain
+    associatedtype Codomain
+    var isRRelated: (Domain, Codomain) -> Bool { get }
 }
 
-public protocol BinaryRelationProtocol : RelationProtocol {
-    var function: (Operand, Operand) -> Bool { get }
+public protocol ClosedBinaryRelationProtocol : BinaryRelationProtocol {
+    associatedtype Codomain
+    var isRRelated: (Codomain, Codomain) -> Bool { get }
 }
 
 public struct BinaryRelation<UnderlyingSet : Arbitrary> : BinaryRelationProtocol {
-    public typealias Operand = UnderlyingSet
-    public let function: (UnderlyingSet, UnderlyingSet) -> Bool
-    public init(_ function: @escaping (UnderlyingSet, UnderlyingSet) -> Bool) {
-        self.function = function
+    public typealias Domain = UnderlyingSet
+    public typealias Codomain = UnderlyingSet
+    public let isRRelated: (UnderlyingSet, UnderlyingSet) -> Bool
+    public init(_ isRRelated: @escaping (UnderlyingSet, UnderlyingSet) -> Bool) {
+        self.isRRelated = isRRelated
     }
 }
 
 // MARK: -
 
-public protocol Transform : RelationProtocol {
-    associatedtype Operand : Equatable, Arbitrary
+public protocol Transform {
+    associatedtype Operand : Arbitrary, Equatable
 }
 
 public protocol ClosedBinary : Transform {
