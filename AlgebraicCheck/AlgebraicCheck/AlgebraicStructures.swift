@@ -15,7 +15,7 @@ public protocol ClosedBinaryRelationProtocol : BinaryRelationProtocol {
     var isRRelated: (Codomain, Codomain) -> Bool { get }
 }
 
-public struct BinaryRelation<UnderlyingSet : Arbitrary> : BinaryRelationProtocol {
+public struct BinaryRelation<UnderlyingSet : Arbitrary> : ClosedBinaryRelationProtocol {
     public typealias Domain = UnderlyingSet
     public typealias Codomain = UnderlyingSet
     public let isRRelated: (UnderlyingSet, UnderlyingSet) -> Bool
@@ -26,16 +26,13 @@ public struct BinaryRelation<UnderlyingSet : Arbitrary> : BinaryRelationProtocol
 
 // MARK: -
 
-public protocol Transform {
-    associatedtype Operand : Arbitrary, Equatable
-}
-
-public protocol ClosedBinary : Transform {
-    var function: (Operand, Operand) -> Operand { get }
+public protocol ClosedBinary {
+    associatedtype Codomain : Arbitrary, Equatable
+    var function: (Codomain, Codomain) -> Codomain { get }
 }
 
 public struct ClosedBinaryOperation<UnderlyingSet : Equatable & Arbitrary> : ClosedBinary {
-    public typealias Operand = UnderlyingSet
+    public typealias Codomain = UnderlyingSet
     public let function: (UnderlyingSet, UnderlyingSet) -> UnderlyingSet
     public init(_ function: @escaping (UnderlyingSet, UnderlyingSet) -> UnderlyingSet) {
         self.function = function

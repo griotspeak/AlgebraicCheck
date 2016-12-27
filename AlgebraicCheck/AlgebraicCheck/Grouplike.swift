@@ -24,7 +24,7 @@ public typealias LatinSquareFunction<UnderlyingSet> = ((_ a: UnderlyingSet, _ b:
 public typealias InvertFunction<UnderlyingSet> = ((UnderlyingSet) -> UnderlyingSet)
 
 public struct PropertyInputComponents<UnderlyingSet, Operation>
-where UnderlyingSet : Arbitrary & Equatable, Operation : ClosedBinary, Operation.Operand == UnderlyingSet {
+where UnderlyingSet : Arbitrary & Equatable, Operation : ClosedBinary, Operation.Codomain == UnderlyingSet {
 
     // for each
     //    a ∗ x = b
@@ -74,7 +74,7 @@ public struct Quasigroup<Operation : ClosedBinary> : ClosedBinaryAlgebraicStruct
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
 
-    public init(operation: Operation, latinSquare: @escaping LatinSquareFunction<Operation.Operand>) {
+    public init(operation: Operation, latinSquare: @escaping LatinSquareFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [AlgebraicProperty<Operation>.latinSquare(latinSquare)]
     }
@@ -85,7 +85,7 @@ public struct Loop<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
 
-    public init(operation: Operation, identity: Operation.Operand, latinSquare: @escaping LatinSquareFunction<Operation.Operand>) {
+    public init(operation: Operation, identity: Operation.Codomain, latinSquare: @escaping LatinSquareFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
             AlgebraicProperty.identity(identity),
@@ -99,7 +99,7 @@ struct Monoid<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
 
-    public init(operation: Operation, identity: Operation.Operand) {
+    public init(operation: Operation, identity: Operation.Codomain) {
         self.operation = operation
         self.algebraicProperties = [
             AlgebraicProperty.associativity,
@@ -113,7 +113,7 @@ public struct AbelianGroup<Operation : ClosedBinary> : ClosedBinaryAlgebraicStru
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
 
-    public init(operation: Operation, identity: Operation.Operand, inverseOp: @escaping InvertFunction<Operation.Operand>) {
+    public init(operation: Operation, identity: Operation.Codomain, inverseOp: @escaping InvertFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
             AlgebraicProperty.commutativity,
