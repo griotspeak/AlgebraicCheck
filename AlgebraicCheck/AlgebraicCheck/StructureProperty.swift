@@ -13,6 +13,7 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
     case totality
     case associativity
     case commutativity
+    case idempotence(element: Operation.Codomain)
     case identity(Operation.Codomain)
     case invertibility(identity: Operation.Codomain, InvertFunction<Operation.Codomain>)
     case latinSquare(((_ a: Operation.Codomain, _ b: Operation.Codomain) -> (x: Operation.Codomain, y: Operation.Codomain)))
@@ -25,6 +26,8 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
             return "associativity"
         case .commutativity:
             return "commutativity"
+        case .idempotence:
+            return "idempotence"
         case .identity:
             return "identity"
         case .invertibility:
@@ -44,6 +47,8 @@ extension StructureProperty where Operation : ClosedBinary {
             return createAssociativityProperty(operation)
         case .commutativity:
             return createCommutativityProperty(operation)
+        case let .idempotence(element):
+            return createIdempotenceProperty(operation, element: element)
         case let .identity(id):
             return createIdentityProperty(operation, identity: id)
         case let .invertibility(identity: id, fn):
@@ -65,6 +70,15 @@ extension StructureProperty where Operation : ClosedBinary {
             operation.function(i, j) == operation.function(j, i)
         }
         return [("commutative", property)]
+    }
+
+    func createIdempotenceProperty(_ operation: Operation, element: Operation.Codomain) -> SwiftCheckProperties {
+        let property = forAll { (count: Int) in
+            return Array(repeating: element, count: abs(count) % 125).reduce(true) {
+                $0 && (operation.function(element, $1) == element)
+            }
+        }
+        return [("idempotence", property)]
     }
 
     func createIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
