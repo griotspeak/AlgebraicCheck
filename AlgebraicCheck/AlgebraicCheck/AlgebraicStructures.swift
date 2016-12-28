@@ -7,20 +7,20 @@ public typealias SwiftCheckProperties = [(description: String, Property)]
 public protocol BinaryRelationProtocol {
     associatedtype Domain
     associatedtype Codomain
-    var isRRelated: (Domain, Codomain) -> Bool { get }
+    var relates: (Domain, Codomain) -> Bool { get }
 }
 
 public protocol HomogeneousRelationProtocol : BinaryRelationProtocol {
     associatedtype Codomain
-    var isRRelated: (Codomain, Codomain) -> Bool { get }
+    var relates: (Codomain, Codomain) -> Bool { get }
 }
 
 public struct HomogeneousRelation<UnderlyingSet : Arbitrary> : HomogeneousRelationProtocol {
     public typealias Domain = UnderlyingSet
     public typealias Codomain = UnderlyingSet
-    public let isRRelated: (UnderlyingSet, UnderlyingSet) -> Bool
-    public init(_ isRRelated: @escaping (UnderlyingSet, UnderlyingSet) -> Bool) {
-        self.isRRelated = isRRelated
+    public let relates: (UnderlyingSet, UnderlyingSet) -> Bool
+    public init(_ relates: @escaping (UnderlyingSet, UnderlyingSet) -> Bool) {
+        self.relates = relates
     }
 }
 

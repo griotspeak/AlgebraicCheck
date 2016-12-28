@@ -60,14 +60,14 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
 
     func createTotalProperty(_ op: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain, b: Relation.Codomain) in
-            return op.isRRelated(a, b) || op.isRRelated(b, a)
+            return op.relates(a, b) || op.relates(b, a)
         }
         return [("total", property)]
     }
 
     func createAntisymmetricProperty(_ op: Relation, equivalence: @escaping (Relation.Codomain, Relation.Codomain) -> Bool) -> SwiftCheckProperties {
         let property = forAll { (i: Relation.Codomain, j: Relation.Codomain) in
-            if op.isRRelated(i, j) && op.isRRelated(j, i) {
+            if op.relates(i, j) && op.relates(j, i) {
                 return equivalence(i, j)
             } else {
                 return equivalence(i, j) == false
@@ -78,8 +78,8 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
 
     func createTransitiveProperty(_ op: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain, b: Relation.Codomain, c: Relation.Codomain) -> Bool in
-            if op.isRRelated(a, b) && op.isRRelated(b, c) {
-                return op.isRRelated(a, c) == true
+            if op.relates(a, b) && op.relates(b, c) {
+                return op.relates(a, c) == true
             } else {
                 return true
             }
@@ -88,7 +88,7 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
     }
     func createReflexiveProperty(_ op: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain) in
-            op.isRRelated(a, a)
+            op.relates(a, a)
         }
         return [("reflexive", property)]
     }
