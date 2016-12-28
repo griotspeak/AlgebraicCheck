@@ -181,26 +181,4 @@ extension StructureProperty where Operation : ClosedBinary {
         }
         return [("absorbing element", property)]
     }
-
-    func creatLeftEuclidianProperty(_ operation: Operation) -> SwiftCheckProperties {
-        let property = forAll { (x: Operation.Codomain, y: Operation.Codomain, z: Operation.Codomain) in
-            if operation.function(x, z) && operation.function(y, z) {
-                return operation.function(x, y)
-            } else {
-                return true
-            }
-        }
-        return [("left euclidian", property)]
-    }
-
-    func creatLeftEuclidianProperty(_ operation: Operation) -> SwiftCheckProperties {
-        let property = forAll { (x: Operation.Codomain, y: Operation.Codomain, z: Operation.Codomain) in
-            if operation.function(x, z) && operation.function(y, z) {
-                return operation.function(y, z)
-            } else {
-                return true
-            }
-        }
-        return [("right euclidian", property)]
-    }
 }

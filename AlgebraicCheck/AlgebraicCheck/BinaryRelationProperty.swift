@@ -32,6 +32,8 @@ where Relation : BinaryRelationProtocol/*, Relation.Domain : Arbitrary*/ {
     case transitive
     case reflexive
     case irreflexive
+    case leftEuclidian
+    case rightEuclidian
 
     public var description: String {
         switch self {
@@ -49,6 +51,10 @@ where Relation : BinaryRelationProtocol/*, Relation.Domain : Arbitrary*/ {
             return "reflexive"
         case .irreflexive:
             return "irreflexive"
+        case .leftEuclidian:
+            return "left euclidian"
+        case .rightEuclidian:
+            return "right euclidian"
         }
     }
 }
@@ -70,7 +76,10 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
             return createReflexiveProperty(relation)
         case .irreflexive:
             return createIrreflexiveProperty(relation)
-
+        case .leftEuclidian:
+            return creatLeftEuclidianProperty(relation)
+        case .rightEuclidian:
+            return creatRightEuclidianProperty(relation)
         }
     }
 
@@ -133,5 +142,27 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
             false == relation.relates(a, a)
         }
         return [("irreflexive", property)]
+    }
+
+    func creatLeftEuclidianProperty(_ relation: Relation) -> SwiftCheckProperties {
+        let property = forAll { (x: Relation.Codomain, y: Relation.Codomain, z: Relation.Codomain) in
+            if relation.relates(x, z) && relation.relates(y, z) {
+                return relation.relates(x, y)
+            } else {
+                return true
+            }
+        }
+        return [("left euclidian", property)]
+    }
+
+    func creatRightEuclidianProperty(_ relation: Relation) -> SwiftCheckProperties {
+        let property = forAll { (x: Relation.Codomain, y: Relation.Codomain, z: Relation.Codomain) in
+            if relation.relates(x, z) && relation.relates(y, z) {
+                return relation.relates(y, z)
+            } else {
+                return true
+            }
+        }
+        return [("right euclidian", property)]
     }
 }
