@@ -1,17 +1,13 @@
 import SwiftCheck
 
-public protocol AlgebraicStructure {
+public protocol MagmaType {
     associatedtype OpType : ClosedBinary
     var operation: OpType { get }
     var algebraicProperties: [AlgebraicProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }
 }
 
-public protocol ClosedBinaryAlgebraicStructure : AlgebraicStructure {
-    associatedtype OpType : ClosedBinary
-}
-
-extension ClosedBinaryAlgebraicStructure {
+extension MagmaType {
     public var concretizedProperties: [(description: String, Property)] {
         return algebraicProperties.flatMap {
             $0.concretize(with: operation)
@@ -43,7 +39,7 @@ where UnderlyingSet : Arbitrary & Equatable, Operation : ClosedBinary, Operation
     }
 }
 
-public struct Magma<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
+public struct Magma<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
 
@@ -56,7 +52,7 @@ public struct Magma<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
     }
 }
 
-public struct Semigroup<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
+public struct Semigroup<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
 
@@ -69,7 +65,7 @@ public struct Semigroup<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructu
 }
 
 
-public struct Quasigroup<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
+public struct Quasigroup<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
@@ -80,7 +76,7 @@ public struct Quasigroup<Operation : ClosedBinary> : ClosedBinaryAlgebraicStruct
     }
 }
 
-public struct Loop<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
+public struct Loop<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
@@ -94,7 +90,7 @@ public struct Loop<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
     }
 }
 
-struct Monoid<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
+struct Monoid<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
@@ -108,7 +104,7 @@ struct Monoid<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
     }
 }
 
-public struct AbelianGroup<Operation : ClosedBinary> : ClosedBinaryAlgebraicStructure {
+public struct AbelianGroup<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [AlgebraicProperty<Operation>]
