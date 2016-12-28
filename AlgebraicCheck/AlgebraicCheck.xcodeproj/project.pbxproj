@@ -15,8 +15,6 @@
 		32701F9B1E118DB400BF2A75 /* AlgebraicCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323B7B6F1E117EEC003F65B2 /* AlgebraicCheckTests.swift */; };
 		32701FA01E118DFE00BF2A75 /* AlgebraicProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701F9D1E118DFE00BF2A75 /* AlgebraicProperty.swift */; };
 		32701FA11E118DFE00BF2A75 /* AlgebraicProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701F9D1E118DFE00BF2A75 /* AlgebraicProperty.swift */; };
-		32701FA21E118DFE00BF2A75 /* AlgebraicStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701F9E1E118DFE00BF2A75 /* AlgebraicStructures.swift */; };
-		32701FA31E118DFE00BF2A75 /* AlgebraicStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701F9E1E118DFE00BF2A75 /* AlgebraicStructures.swift */; };
 		32701FA41E118DFE00BF2A75 /* Magma.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701F9F1E118DFE00BF2A75 /* Magma.swift */; };
 		32701FA51E118DFE00BF2A75 /* Magma.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701F9F1E118DFE00BF2A75 /* Magma.swift */; };
 		32701FCA1E1195CE00BF2A75 /* BinaryRelationProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701FC91E1195CE00BF2A75 /* BinaryRelationProperty.swift */; };
@@ -108,7 +106,6 @@
 		323B7B801E117F19003F65B2 /* AlgebraicCheck.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AlgebraicCheck.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		323B7B881E117F19003F65B2 /* AlgebraicCheck_macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AlgebraicCheck_macOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		32701F9D1E118DFE00BF2A75 /* AlgebraicProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlgebraicProperty.swift; sourceTree = "<group>"; };
-		32701F9E1E118DFE00BF2A75 /* AlgebraicStructures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlgebraicStructures.swift; sourceTree = "<group>"; };
 		32701F9F1E118DFE00BF2A75 /* Magma.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Magma.swift; sourceTree = "<group>"; };
 		32701FB01E11910900BF2A75 /* SwiftCheck.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftCheck.xcodeproj; path = ../Carthage/Checkouts/SwiftCheck/SwiftCheck.xcodeproj; sourceTree = "<group>"; };
 		32701FC91E1195CE00BF2A75 /* BinaryRelationProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryRelationProperty.swift; sourceTree = "<group>"; };
@@ -175,7 +172,6 @@
 			children = (
 				323B7B641E117EEC003F65B2 /* AlgebraicCheck.h */,
 				32701F9D1E118DFE00BF2A75 /* AlgebraicProperty.swift */,
-				32701F9E1E118DFE00BF2A75 /* AlgebraicStructures.swift */,
 				32701FC91E1195CE00BF2A75 /* BinaryRelationProperty.swift */,
 				32701FD01E12C8B600BF2A75 /* Orderings.swift */,
 				32701F9F1E118DFE00BF2A75 /* Magma.swift */,
@@ -451,7 +447,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32701FA21E118DFE00BF2A75 /* AlgebraicStructures.swift in Sources */,
 				32701FD11E12C8B600BF2A75 /* Orderings.swift in Sources */,
 				32701FA41E118DFE00BF2A75 /* Magma.swift in Sources */,
 				32701FA01E118DFE00BF2A75 /* AlgebraicProperty.swift in Sources */,
@@ -471,7 +466,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32701FA31E118DFE00BF2A75 /* AlgebraicStructures.swift in Sources */,
 				32701FD21E12C8B600BF2A75 /* Orderings.swift in Sources */,
 				32701FA51E118DFE00BF2A75 /* Magma.swift in Sources */,
 				32701FA11E118DFE00BF2A75 /* AlgebraicProperty.swift in Sources */,

@@ -1,9 +1,22 @@
 import SwiftCheck
 
+public protocol ClosedBinary {
+    associatedtype Codomain : Arbitrary, Equatable
+    var function: (Codomain, Codomain) -> Codomain { get }
+}
+
+public struct ClosedBinaryOperation<UnderlyingSet : Equatable & Arbitrary> : ClosedBinary {
+    public typealias Codomain = UnderlyingSet
+    public let function: (UnderlyingSet, UnderlyingSet) -> UnderlyingSet
+    public init(_ function: @escaping (UnderlyingSet, UnderlyingSet) -> UnderlyingSet) {
+        self.function = function
+    }
+}
+
 public protocol MagmaType {
     associatedtype OpType : ClosedBinary
     var operation: OpType { get }
-    var algebraicProperties: [AlgebraicProperty<OpType>] { get }
+    var algebraicProperties: [StructureProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }
 }
 
@@ -47,7 +60,7 @@ public struct Magma<Operation : ClosedBinary> : MagmaType {
         self.operation = operation
     }
 
-    public var algebraicProperties: [AlgebraicProperty<Operation>] {
+    public var algebraicProperties: [StructureProperty<Operation>] {
         return []
     }
 }
@@ -59,8 +72,8 @@ public struct Semigroup<Operation : ClosedBinary> : MagmaType {
     public init(operation: Operation) {
         self.operation = operation
     }
-    public var algebraicProperties: [AlgebraicProperty<Operation>] {
-        return [AlgebraicProperty.associativity]
+    public var algebraicProperties: [StructureProperty<Operation>] {
+        return [StructureProperty.associativity]
     }
 }
 
@@ -68,24 +81,24 @@ public struct Semigroup<Operation : ClosedBinary> : MagmaType {
 public struct Quasigroup<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
-    public let algebraicProperties: [AlgebraicProperty<Operation>]
+    public let algebraicProperties: [StructureProperty<Operation>]
 
     public init(operation: Operation, latinSquare: @escaping LatinSquareFunction<Operation.Codomain>) {
         self.operation = operation
-        self.algebraicProperties = [AlgebraicProperty<Operation>.latinSquare(latinSquare)]
+        self.algebraicProperties = [StructureProperty<Operation>.latinSquare(latinSquare)]
     }
 }
 
 public struct Loop<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
-    public let algebraicProperties: [AlgebraicProperty<Operation>]
+    public let algebraicProperties: [StructureProperty<Operation>]
 
     public init(operation: Operation, identity: Operation.Codomain, latinSquare: @escaping LatinSquareFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
-            AlgebraicProperty.identity(identity),
-            AlgebraicProperty<Operation>.latinSquare(latinSquare)
+            StructureProperty.identity(identity),
+            StructureProperty<Operation>.latinSquare(latinSquare)
         ]
     }
 }
@@ -93,13 +106,13 @@ public struct Loop<Operation : ClosedBinary> : MagmaType {
 struct Monoid<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
-    public let algebraicProperties: [AlgebraicProperty<Operation>]
+    public let algebraicProperties: [StructureProperty<Operation>]
 
     public init(operation: Operation, identity: Operation.Codomain) {
         self.operation = operation
         self.algebraicProperties = [
-            AlgebraicProperty.associativity,
-            AlgebraicProperty.identity(identity)
+            StructureProperty.associativity,
+            StructureProperty.identity(identity)
         ]
     }
 }
@@ -107,15 +120,15 @@ struct Monoid<Operation : ClosedBinary> : MagmaType {
 public struct AbelianGroup<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
-    public let algebraicProperties: [AlgebraicProperty<Operation>]
+    public let algebraicProperties: [StructureProperty<Operation>]
 
     public init(operation: Operation, identity: Operation.Codomain, inverseOp: @escaping InvertFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
-            AlgebraicProperty.commutativity,
-            AlgebraicProperty.associativity,
-            AlgebraicProperty.identity(identity),
-            AlgebraicProperty.invertibility(identity: identity, inverseOp)
+            StructureProperty.commutativity,
+            StructureProperty.associativity,
+            StructureProperty.identity(identity),
+            StructureProperty.invertibility(identity: identity, inverseOp)
         ]
     }
 }

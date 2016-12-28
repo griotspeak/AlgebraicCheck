@@ -1,5 +1,5 @@
 //
-//  AlgebraicProperty.swift
+//  StructureProperty.swift
 //  Lattice
 //
 //  Created by TJ Usiyan on 2016/12/25.
@@ -8,7 +8,7 @@
 
 import SwiftCheck
 
-public enum AlgebraicProperty<Operation> : CustomStringConvertible
+public enum StructureProperty<Operation> : CustomStringConvertible
 where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
     case totality
     case associativity
@@ -35,7 +35,7 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
     }
 }
 
-extension AlgebraicProperty where Operation : ClosedBinary {
+extension StructureProperty where Operation : ClosedBinary {
     internal func concretize(with operation: Operation) -> SwiftCheckProperties {
             switch self {
             case .totality:

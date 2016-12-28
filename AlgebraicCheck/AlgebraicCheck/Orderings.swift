@@ -8,6 +8,31 @@
 
 import SwiftCheck
 
+public typealias SwiftCheckProperties = [(description: String, Property)]
+
+// MARK: -
+
+public protocol BinaryRelationProtocol {
+    associatedtype Domain
+    associatedtype Codomain
+    var relates: (Domain, Codomain) -> Bool { get }
+}
+
+public protocol HomogenousRelationProtocol : BinaryRelationProtocol {
+    associatedtype Codomain
+    var relates: (Codomain, Codomain) -> Bool { get }
+}
+
+public struct HomogenousRelation<UnderlyingSet : Arbitrary> : HomogenousRelationProtocol {
+    public typealias Domain = UnderlyingSet
+    public typealias Codomain = UnderlyingSet
+    public let relates: (UnderlyingSet, UnderlyingSet) -> Bool
+    public init(_ relates: @escaping (UnderlyingSet, UnderlyingSet) -> Bool) {
+        self.relates = relates
+    }
+}
+
+
 public struct GenericOrderedStructure<Relation : HomogenousRelationProtocol> : OrderedStructure
 where Relation.Codomain : Arbitrary {
 
