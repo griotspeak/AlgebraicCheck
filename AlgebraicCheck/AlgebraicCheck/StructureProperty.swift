@@ -14,6 +14,8 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
     case associativity
     case commutativity
     case idempotence(element: Operation.Codomain)
+    case leftIdentity(Operation.Codomain)
+    case rightIdentity(Operation.Codomain)
     case identity(Operation.Codomain)
     case invertibility(identity: Operation.Codomain, InvertFunction<Operation.Codomain>)
     case latinSquare(((_ a: Operation.Codomain, _ b: Operation.Codomain) -> (x: Operation.Codomain, y: Operation.Codomain)))
@@ -28,6 +30,10 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
             return "commutativity"
         case .idempotence:
             return "idempotence"
+        case .leftIdentity:
+            return "left identity"
+        case .rightIdentity:
+            return "right identity"
         case .identity:
             return "identity"
         case .invertibility:
@@ -49,6 +55,10 @@ extension StructureProperty where Operation : ClosedBinary {
             return createCommutativityProperty(operation)
         case let .idempotence(element):
             return createIdempotenceProperty(operation, element: element)
+        case let .leftIdentity(id):
+            return createLeftIdentityProperty(operation, identity: id)
+        case let .rightIdentity(id):
+            return createRightIdentityProperty(operation, identity: id)
         case let .identity(id):
             return createIdentityProperty(operation, identity: id)
         case let .invertibility(identity: id, fn):
@@ -81,9 +91,23 @@ extension StructureProperty where Operation : ClosedBinary {
         return [("idempotence", property)]
     }
 
+    func createLeftIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
+        let property = forAll { (x: Operation.Codomain) in
+            return operation.function(identity, x) == x
+        }
+        return [("left identity", property)]
+    }
+
+    func createRightIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
+        let property = forAll { (x: Operation.Codomain) in
+            return operation.function(x, identity) == x
+        }
+        return [("right identity", property)]
+    }
+
     func createIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
-        let property = forAll { (i: Operation.Codomain) in
-            return operation.function(i, identity) == i && operation.function(identity, i) == i
+        let property = forAll { (x: Operation.Codomain) in
+            return operation.function(x, identity) == x && operation.function(identity, x) == x
         }
         return [("identity", property)]
     }
