@@ -79,7 +79,7 @@ public struct Semigroup<Operation : ClosedBinary> : MagmaProtocol {
     }
 }
 
-struct Monoid<Operation : ClosedBinary> : MagmaProtocol {
+public struct Monoid<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [StructureProperty<Operation>]
