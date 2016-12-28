@@ -10,12 +10,12 @@ public protocol BinaryRelationProtocol {
     var isRRelated: (Domain, Codomain) -> Bool { get }
 }
 
-public protocol ClosedBinaryRelationProtocol : BinaryRelationProtocol {
+public protocol HomogeneousRelationProtocol : BinaryRelationProtocol {
     associatedtype Codomain
     var isRRelated: (Codomain, Codomain) -> Bool { get }
 }
 
-public struct BinaryRelation<UnderlyingSet : Arbitrary> : ClosedBinaryRelationProtocol {
+public struct HomogeneousRelation<UnderlyingSet : Arbitrary> : HomogeneousRelationProtocol {
     public typealias Domain = UnderlyingSet
     public typealias Codomain = UnderlyingSet
     public let isRRelated: (UnderlyingSet, UnderlyingSet) -> Bool

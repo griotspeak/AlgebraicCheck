@@ -9,17 +9,13 @@
 import SwiftCheck
 
 public protocol OrderedStructure {
-    associatedtype OpType : ClosedBinaryRelationProtocol
+    associatedtype OpType : HomogeneousRelationProtocol
     var relation: OpType { get }
     var algebraicProperties: [RelationProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }
 }
 
-public protocol BinaryOrderedStructure : OrderedStructure {
-    associatedtype OpType : ClosedBinaryRelationProtocol
-}
-
-extension BinaryOrderedStructure where OpType.Codomain : Arbitrary {
+extension OrderedStructure where OpType.Codomain : Arbitrary {
     public var concretizedProperties: SwiftCheckProperties {
         return algebraicProperties.flatMap {
             return $0.concretize(with: relation)
@@ -48,7 +44,7 @@ where Relation : BinaryRelationProtocol/*, Relation.Domain : Arbitrary*/ {
     }
 }
 
-extension RelationProperty where Relation : ClosedBinaryRelationProtocol, Relation.Codomain : Arbitrary {
+extension RelationProperty where Relation : HomogeneousRelationProtocol, Relation.Codomain : Arbitrary {
     internal func concretize(with operation: Relation) -> SwiftCheckProperties {
         switch self {
         case .total:

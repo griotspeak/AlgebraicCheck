@@ -8,7 +8,7 @@
 
 import SwiftCheck
 
-public struct PartialOrder<Relation : ClosedBinaryRelationProtocol> : BinaryOrderedStructure where Relation.Codomain : Arbitrary {
+public struct PartialOrder<Relation : HomogeneousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation
     public let algebraicProperties: [RelationProperty<Relation>]
@@ -23,7 +23,7 @@ public struct PartialOrder<Relation : ClosedBinaryRelationProtocol> : BinaryOrde
     }
 }
 
-public struct TotalOrder<Relation : ClosedBinaryRelationProtocol> : BinaryOrderedStructure where Relation.Codomain : Arbitrary {
+public struct TotalOrder<Relation : HomogeneousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation
     public let algebraicProperties: [RelationProperty<Relation>]
