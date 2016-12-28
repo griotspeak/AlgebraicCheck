@@ -19,5 +19,8 @@ func reportThat<Structure, UnderlyingSet>(_ underlyingSet: UnderlyingSet.Type, h
         }
 }
 
-reportThat(Int.self, has: PartialOrder(relation: HomogeneousRelation<Int>(<=), equivalence: ==))
-reportThat(Int.self, has: TotalOrder(relation: HomogeneousRelation<Int>(<=), equivalence: ==))
+reportThat(Int.self, has: PartialOrder(relation: HomogenousRelation<Int>(<=), equivalence: ==))
+reportThat(Int.self, has: TotalOrder(relation: HomogenousRelation<Int>(<=), equivalence: ==))
+
+reportThat(Int.self, has: Int.form(relation: ==, algebraicProperties: [RelationProperty.symmetric]))
+reportThat(Int.self, has: Int.form(relation: <, algebraicProperties: [RelationProperty.asymmetric]))

@@ -9,7 +9,7 @@
 import SwiftCheck
 
 public protocol OrderedStructure {
-    associatedtype OpType : HomogeneousRelationProtocol
+    associatedtype OpType : HomogenousRelationProtocol
     var relation: OpType { get }
     var algebraicProperties: [RelationProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }
@@ -27,34 +27,50 @@ public enum RelationProperty<Relation> : CustomStringConvertible
 where Relation : BinaryRelationProtocol/*, Relation.Domain : Arbitrary*/ {
     case total
     case antisymmetric(equivalence: (Relation.Codomain, Relation.Codomain) -> Bool)
+    case symmetric
+    case asymmetric
     case transitive
     case reflexive
+    case irreflexive
 
     public var description: String {
         switch self {
         case .total:
             return "total"
         case .antisymmetric:
-            return "antisemmetric"
+            return "antisymmetric"
+        case .symmetric:
+            return "symmetric"
+        case .asymmetric:
+            return "asymmetric"
         case .transitive:
             return "transitive"
         case .reflexive:
             return "reflexive"
+        case .irreflexive:
+            return "irreflexive"
         }
     }
 }
 
-extension RelationProperty where Relation : HomogeneousRelationProtocol, Relation.Codomain : Arbitrary {
-    internal func concretize(with operation: Relation) -> SwiftCheckProperties {
+extension RelationProperty where Relation : HomogenousRelationProtocol, Relation.Codomain : Arbitrary {
+    internal func concretize(with relation: Relation) -> SwiftCheckProperties {
         switch self {
         case .total:
-            return createTotalProperty(operation)
+            return createTotalProperty(relation)
         case let .antisymmetric(equivalance):
-            return createAntisymmetricProperty(operation, equivalence: equivalance)
+            return createAntisymmetricProperty(relation, equivalence: equivalance)
+        case .symmetric:
+            return createSymmetricProperty(relation)
+        case .asymmetric:
+            return createAsymmetricProperty(relation)
         case .transitive:
-            return createTransitiveProperty(operation)
+            return createTransitiveProperty(relation)
         case .reflexive:
-            return createReflexiveProperty(operation)
+            return createReflexiveProperty(relation)
+        case .irreflexive:
+            return createIrreflexiveProperty(relation)
+
         }
     }
 
@@ -64,6 +80,25 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
         }
         return [("total", property)]
     }
+
+
+    func createAsymmetricProperty(_ relation: Relation) -> SwiftCheckProperties {
+        let property = forAll { (a: Relation.Codomain, b: Relation.Codomain) in
+            return relation.relates(a, b) ==> {
+                false == relation.relates(b, a)
+            }
+        }
+
+        return [("asymmetric", property)]
+    }
+
+    func createSymmetricProperty(_ relation: Relation) -> SwiftCheckProperties {
+        let property = forAll { (a: Relation.Codomain, b: Relation.Codomain) in
+            relation.relates(a, b) == relation.relates(b, a)
+        }
+        return [("symmetric", property)]
+    }
+
 
     func createAntisymmetricProperty(_ relation: Relation, equivalence: @escaping (Relation.Codomain, Relation.Codomain) -> Bool) -> SwiftCheckProperties {
         let property = forAll { (i: Relation.Codomain, j: Relation.Codomain) in
@@ -91,5 +126,12 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
             relation.relates(a, a)
         }
         return [("reflexive", property)]
+    }
+
+    func createIrreflexiveProperty(_ relation: Relation) -> SwiftCheckProperties {
+        let property = forAll { (a: Relation.Codomain) in
+            false == relation.relates(a, a)
+        }
+        return [("irreflexive", property)]
     }
 }

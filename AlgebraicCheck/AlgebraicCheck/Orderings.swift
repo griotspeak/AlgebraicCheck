@@ -8,7 +8,26 @@
 
 import SwiftCheck
 
-public struct PartialOrder<Relation : HomogeneousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
+public struct GenericOrderedStructure<Relation : HomogenousRelationProtocol> : OrderedStructure
+where Relation.Codomain : Arbitrary {
+
+    public let relation: Relation
+    public let algebraicProperties: [RelationProperty<Relation>]
+
+    public init(relation: Relation, algebraicProperties: [RelationProperty<Relation>]) {
+        self.relation = relation
+        self.algebraicProperties = algebraicProperties
+    }
+}
+
+extension Arbitrary {
+    public static func form(relation: @escaping (Self, Self) -> Bool, algebraicProperties: [RelationProperty<HomogenousRelation<Self>>]) -> GenericOrderedStructure<HomogenousRelation<Self>> {
+
+        return GenericOrderedStructure(relation: HomogenousRelation<Self>(relation), algebraicProperties: algebraicProperties)
+    }
+}
+
+public struct PartialOrder<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation
     public let algebraicProperties: [RelationProperty<Relation>]
@@ -23,7 +42,7 @@ public struct PartialOrder<Relation : HomogeneousRelationProtocol> : OrderedStru
     }
 }
 
-public struct TotalOrder<Relation : HomogeneousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
+public struct TotalOrder<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation
     public let algebraicProperties: [RelationProperty<Relation>]
@@ -38,4 +57,3 @@ public struct TotalOrder<Relation : HomogeneousRelationProtocol> : OrderedStruct
         ]
     }
 }
-

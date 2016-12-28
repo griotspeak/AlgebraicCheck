@@ -10,12 +10,12 @@ public protocol BinaryRelationProtocol {
     var relates: (Domain, Codomain) -> Bool { get }
 }
 
-public protocol HomogeneousRelationProtocol : BinaryRelationProtocol {
+public protocol HomogenousRelationProtocol : BinaryRelationProtocol {
     associatedtype Codomain
     var relates: (Codomain, Codomain) -> Bool { get }
 }
 
-public struct HomogeneousRelation<UnderlyingSet : Arbitrary> : HomogeneousRelationProtocol {
+public struct HomogenousRelation<UnderlyingSet : Arbitrary> : HomogenousRelationProtocol {
     public typealias Domain = UnderlyingSet
     public typealias Codomain = UnderlyingSet
     public let relates: (UnderlyingSet, UnderlyingSet) -> Bool
