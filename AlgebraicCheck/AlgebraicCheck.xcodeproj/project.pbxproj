@@ -11,6 +11,8 @@
 		321263171E144122001368D2 /* MagmaProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321263151E144122001368D2 /* MagmaProtocolTests.swift */; };
 		3212631F1E1441B2001368D2 /* Check.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3212631C1E14419F001368D2 /* Check.swift */; };
 		321263201E1441B3001368D2 /* Check.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3212631C1E14419F001368D2 /* Check.swift */; };
+		321263221E145035001368D2 /* OrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321263211E145035001368D2 /* OrderTests.swift */; };
+		321263231E145035001368D2 /* OrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321263211E145035001368D2 /* OrderTests.swift */; };
 		323B7B6B1E117EEC003F65B2 /* AlgebraicCheck.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 323B7B611E117EEC003F65B2 /* AlgebraicCheck.framework */; };
 		323B7B701E117EEC003F65B2 /* AlgebraicCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323B7B6F1E117EEC003F65B2 /* AlgebraicCheckTests.swift */; };
 		323B7B721E117EEC003F65B2 /* AlgebraicCheck.h in Headers */ = {isa = PBXBuildFile; fileRef = 323B7B641E117EEC003F65B2 /* AlgebraicCheck.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -103,6 +105,7 @@
 /* Begin PBXFileReference section */
 		321263151E144122001368D2 /* MagmaProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MagmaProtocolTests.swift; sourceTree = "<group>"; };
 		3212631C1E14419F001368D2 /* Check.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Check.swift; sourceTree = "<group>"; };
+		321263211E145035001368D2 /* OrderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTests.swift; sourceTree = "<group>"; };
 		323B7B611E117EEC003F65B2 /* AlgebraicCheck.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AlgebraicCheck.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		323B7B641E117EEC003F65B2 /* AlgebraicCheck.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlgebraicCheck.h; sourceTree = "<group>"; };
 		323B7B651E117EEC003F65B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -193,6 +196,7 @@
 				323B7B6F1E117EEC003F65B2 /* AlgebraicCheckTests.swift */,
 				323B7B711E117EEC003F65B2 /* Info.plist */,
 				321263151E144122001368D2 /* MagmaProtocolTests.swift */,
+				321263211E145035001368D2 /* OrderTests.swift */,
 			);
 			path = AlgebraicCheckTests;
 			sourceTree = "<group>";
@@ -467,6 +471,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				321263221E145035001368D2 /* OrderTests.swift in Sources */,
 				321263161E144122001368D2 /* MagmaProtocolTests.swift in Sources */,
 				323B7B701E117EEC003F65B2 /* AlgebraicCheckTests.swift in Sources */,
 			);
@@ -488,6 +493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				321263231E145035001368D2 /* OrderTests.swift in Sources */,
 				321263171E144122001368D2 /* MagmaProtocolTests.swift in Sources */,
 				32701F9B1E118DB400BF2A75 /* AlgebraicCheckTests.swift in Sources */,
 			);
