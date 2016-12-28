@@ -79,6 +79,19 @@ public struct Semigroup<Operation : ClosedBinary> : MagmaProtocol {
     }
 }
 
+struct Monoid<Operation : ClosedBinary> : MagmaProtocol {
+    public typealias OpType = Operation
+    public let operation: Operation
+    public let algebraicProperties: [StructureProperty<Operation>]
+
+    public init(operation: Operation, identity: Operation.Codomain) {
+        self.operation = operation
+        self.algebraicProperties = [
+            StructureProperty.associativity,
+            StructureProperty.identity(identity)
+        ]
+    }
+}
 
 public struct Quasigroup<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
@@ -101,20 +114,6 @@ public struct Loop<Operation : ClosedBinary> : MagmaProtocol {
         self.algebraicProperties = [
             StructureProperty.identity(identity),
             StructureProperty<Operation>.latinSquare(latinSquare)
-        ]
-    }
-}
-
-struct Monoid<Operation : ClosedBinary> : MagmaProtocol {
-    public typealias OpType = Operation
-    public let operation: Operation
-    public let algebraicProperties: [StructureProperty<Operation>]
-
-    public init(operation: Operation, identity: Operation.Codomain) {
-        self.operation = operation
-        self.algebraicProperties = [
-            StructureProperty.associativity,
-            StructureProperty.identity(identity)
         ]
     }
 }
@@ -146,6 +145,20 @@ public struct AbelianGroup<Operation : ClosedBinary> : MagmaProtocol {
             StructureProperty.associativity,
             StructureProperty.identity(identity),
             StructureProperty.invertibility(identity: identity, inverseOp)
+        ]
+    }
+}
+public struct Semilattice<Operation : ClosedBinary> : MagmaProtocol {
+    public typealias OpType = Operation
+    public let operation: Operation
+    public let algebraicProperties: [StructureProperty<Operation>]
+
+    public init(operation: Operation, idempotentElement: Operation.Codomain) {
+        self.operation = operation
+        self.algebraicProperties = [
+            StructureProperty.associativity,
+            StructureProperty.commutativity,
+            StructureProperty.idempotence(idempotentElement)
         ]
     }
 }
