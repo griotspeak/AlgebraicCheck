@@ -20,7 +20,7 @@ extension ClosedBinaryAlgebraicStructure {
 }
 
 
-public typealias LatinSquareFunction<UnderlyingSet> = ((_ a: UnderlyingSet, _ b: UnderlyingSet) -> (x: UnderlyingSet, y: UnderlyingSet))
+public typealias LatinSquareFunction<UnderlyingSet> = ((_ a: UnderlyingSet, _ b: UnderlyingSet) -> (left: UnderlyingSet, right: UnderlyingSet))
 public typealias InvertFunction<UnderlyingSet> = ((UnderlyingSet) -> UnderlyingSet)
 
 public struct PropertyInputComponents<UnderlyingSet, Operation>
