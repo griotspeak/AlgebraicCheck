@@ -13,12 +13,15 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
     case totality
     case associativity
     case commutativity
-    case idempotence(element: Operation.Codomain)
+    case idempotence(Operation.Codomain)
     case leftIdentity(Operation.Codomain)
     case rightIdentity(Operation.Codomain)
     case identity(Operation.Codomain)
     case invertibility(identity: Operation.Codomain, InvertFunction<Operation.Codomain>)
     case latinSquare(((_ a: Operation.Codomain, _ b: Operation.Codomain) -> (x: Operation.Codomain, y: Operation.Codomain)))
+    case leftAbsorbingElement(Operation.Codomain)
+    case rightAbsorbingElement(Operation.Codomain)
+    case absorbingElement(Operation.Codomain)
 
     public var description: String {
         switch self {
@@ -40,6 +43,12 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
             return "invertibility"
         case .latinSquare:
             return "latin square"
+        case .leftAbsorbingElement:
+            return "left zero"
+        case .rightAbsorbingElement:
+            return "right absorbing element"
+        case .absorbingElement:
+            return "absorbing element"
         }
     }
 }
@@ -65,6 +74,12 @@ extension StructureProperty where Operation : ClosedBinary {
             return createInverseProperty(operation, identity: id, inverseOp: fn)
         case let .latinSquare(fn):
             return createLatinSquareProperty(operation, latinSquare: fn)
+        case let .leftAbsorbingElement(value):
+            return createLeftAbsorbingElementProperty(operation, leftAbsorbingElement: value)
+        case let .rightAbsorbingElement(value):
+            return createRightAbsorbingElementProperty(operation, rightAbsorbingElement: value)
+        case let .absorbingElement(value):
+            return createAbsorbingElementProperty(operation, absorbingElement: value)
         }
     }
 
@@ -102,7 +117,7 @@ extension StructureProperty where Operation : ClosedBinary {
         let property = forAll { (x: Operation.Codomain) in
             return operation.function(x, identity) == x
         }
-        return [("right identity", property)]
+        return [("right  identity", property)]
     }
 
     func createIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
@@ -143,5 +158,27 @@ extension StructureProperty where Operation : ClosedBinary {
             ("Latin square property 'x' (a: \(a), b: \(b))", propertyX),
             ("Latin square property 'y' (a: \(a), b: \(b))", propertyY)
         ]
+    }
+
+
+    func createLeftAbsorbingElementProperty(_ operation: Operation, leftAbsorbingElement: Operation.Codomain) -> SwiftCheckProperties {
+        let property = forAll { (x: Operation.Codomain) in
+            return operation.function(leftAbsorbingElement, x) == leftAbsorbingElement
+        }
+        return [("left absorbing element", property)]
+    }
+
+    func createRightAbsorbingElementProperty(_ operation: Operation, rightAbsorbingElement: Operation.Codomain) -> SwiftCheckProperties {
+        let property = forAll { (x: Operation.Codomain) in
+            return operation.function(x, rightAbsorbingElement) == rightAbsorbingElement
+        }
+        return [("right absorbing element", property)]
+    }
+
+    func createAbsorbingElementProperty(_ operation: Operation, absorbingElement: Operation.Codomain) -> SwiftCheckProperties {
+        let property = forAll { (x: Operation.Codomain) in
+            return operation.function(x, absorbingElement) == x && operation.function(absorbingElement, x) == absorbingElement
+        }
+        return [("absorbing element", property)]
     }
 }
