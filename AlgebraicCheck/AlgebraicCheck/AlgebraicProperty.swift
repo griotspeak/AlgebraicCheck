@@ -53,51 +53,51 @@ extension AlgebraicProperty where Operation : ClosedBinary {
             }
     }
 
-    func createAssociativityProperty(_ op: Operation) -> SwiftCheckProperties {
+    func createAssociativityProperty(_ operation: Operation) -> SwiftCheckProperties {
             let property = forAll { (i: Operation.Codomain, j: Operation.Codomain) in
-                op.function(i, j) == op.function(j, i)
+                operation.function(i, j) == operation.function(j, i)
             }
             return [("associative", property)]
     }
 
-    func createCommutativityProperty(_ op: Operation) -> SwiftCheckProperties {
+    func createCommutativityProperty(_ operation: Operation) -> SwiftCheckProperties {
             let property = forAll { (i: Operation.Codomain, j: Operation.Codomain) in
-                op.function(i, j) == op.function(j, i)
+                operation.function(i, j) == operation.function(j, i)
             }
             return [("commutative", property)]
     }
 
-    func createIdentityProperty(_ op: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
+    func createIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
             let property = forAll { (i: Operation.Codomain) in
-                return op.function(i, identity) == i && op.function(identity, i) == i
+                return operation.function(i, identity) == i && operation.function(identity, i) == i
             }
             return [("identity", property)]
     }
 
-    func createInverseProperty(_ op: Operation, identity: Operation.Codomain, inverseOp: @escaping (Operation.Codomain) -> Operation.Codomain) -> SwiftCheckProperties {
+    func createInverseProperty(_ operation: Operation, identity: Operation.Codomain, inverseOp: @escaping (Operation.Codomain) -> Operation.Codomain) -> SwiftCheckProperties {
             let property = forAll { (a: Operation.Codomain) in
                 let b = inverseOp(a)
-                return (op.function(a, b) == identity) && (op.function(b, a) == identity)
+                return (operation.function(a, b) == identity) && (operation.function(b, a) == identity)
             }
             return [("Invertible", property)]
     }
 
-    func createLatinSquareProperty(_ op: Operation, latinSquare: LatinSquareFunction<Operation.Codomain>) -> SwiftCheckProperties {
+    func createLatinSquareProperty(_ operation: Operation, latinSquare: LatinSquareFunction<Operation.Codomain>) -> SwiftCheckProperties {
             let (a, b) = (Operation.Codomain.arbitrary.generate, Operation.Codomain.arbitrary.generate)
             let (x, y) = latinSquare(a, b)
             let propertyX = forAll { (j: Operation.Codomain) in
                 if j == x {
-                    return op.function(a, j) == b
+                    return operation.function(a, j) == b
                 } else {
-                    return op.function(a, j) != b
+                    return operation.function(a, j) != b
                 }
             }
 
             let propertyY = forAll { (j: Operation.Codomain) in
                 if j == y {
-                    return op.function(j, a) == b
+                    return operation.function(j, a) == b
                 } else {
-                    return op.function(j, a) != b
+                    return operation.function(j, a) != b
                 }
             }
 

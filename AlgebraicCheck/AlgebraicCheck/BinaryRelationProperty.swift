@@ -49,8 +49,8 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
         switch self {
         case .total:
             return createTotalProperty(operation)
-        case let .antisymmetric(eq):
-            return createAntisymmetricProperty(operation, equivalence: eq)
+        case let .antisymmetric(equivalance):
+            return createAntisymmetricProperty(operation, equivalence: equivalance)
         case .transitive:
             return createTransitiveProperty(operation)
         case .reflexive:
@@ -58,16 +58,16 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
         }
     }
 
-    func createTotalProperty(_ op: Relation) -> SwiftCheckProperties {
+    func createTotalProperty(_ relation: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain, b: Relation.Codomain) in
-            return op.relates(a, b) || op.relates(b, a)
+            return relation.relates(a, b) || relation.relates(b, a)
         }
         return [("total", property)]
     }
 
-    func createAntisymmetricProperty(_ op: Relation, equivalence: @escaping (Relation.Codomain, Relation.Codomain) -> Bool) -> SwiftCheckProperties {
+    func createAntisymmetricProperty(_ relation: Relation, equivalence: @escaping (Relation.Codomain, Relation.Codomain) -> Bool) -> SwiftCheckProperties {
         let property = forAll { (i: Relation.Codomain, j: Relation.Codomain) in
-            if op.relates(i, j) && op.relates(j, i) {
+            if relation.relates(i, j) && relation.relates(j, i) {
                 return equivalence(i, j)
             } else {
                 return equivalence(i, j) == false
@@ -76,19 +76,19 @@ extension RelationProperty where Relation : HomogeneousRelationProtocol, Relatio
         return [("antisymmetric", property)]
     }
 
-    func createTransitiveProperty(_ op: Relation) -> SwiftCheckProperties {
+    func createTransitiveProperty(_ relation: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain, b: Relation.Codomain, c: Relation.Codomain) -> Bool in
-            if op.relates(a, b) && op.relates(b, c) {
-                return op.relates(a, c) == true
+            if relation.relates(a, b) && relation.relates(b, c) {
+                return relation.relates(a, c) == true
             } else {
                 return true
             }
         }
         return [("transitive", property)]
     }
-    func createReflexiveProperty(_ op: Relation) -> SwiftCheckProperties {
+    func createReflexiveProperty(_ relation: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain) in
-            op.relates(a, a)
+            relation.relates(a, a)
         }
         return [("reflexive", property)]
     }
