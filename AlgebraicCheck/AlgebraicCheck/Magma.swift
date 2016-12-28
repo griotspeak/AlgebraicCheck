@@ -117,6 +117,22 @@ struct Monoid<Operation : ClosedBinary> : MagmaType {
     }
 }
 
+public struct Group<Operation : ClosedBinary> : MagmaType {
+    public typealias OpType = Operation
+    public let operation: Operation
+    public let algebraicProperties: [StructureProperty<Operation>]
+
+    public init(operation: Operation, identity: Operation.Codomain, inverseOp: @escaping InvertFunction<Operation.Codomain>) {
+        self.operation = operation
+        self.algebraicProperties = [
+            StructureProperty.commutativity,
+            StructureProperty.associativity,
+            StructureProperty.identity(identity),
+            StructureProperty.invertibility(identity: identity, inverseOp)
+        ]
+    }
+}
+
 public struct AbelianGroup<Operation : ClosedBinary> : MagmaType {
     public typealias OpType = Operation
     public let operation: Operation
