@@ -15,6 +15,8 @@ public struct ClosedBinaryOperation<UnderlyingSet : Equatable & Arbitrary> : Clo
 
 public protocol MagmaProtocol {
     associatedtype OpType : ClosedBinary
+    typealias UnderlyingSet = OpType.Codomain
+
     var operation: OpType { get }
     var algebraicProperties: [StructureProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }
@@ -125,7 +127,6 @@ public struct Group<Operation : ClosedBinary> : MagmaProtocol {
     public init(operation: Operation, identity: Operation.Codomain, inverseOp: @escaping InvertFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
-            StructureProperty.commutativity,
             StructureProperty.associativity,
             StructureProperty.identity(identity),
             StructureProperty.invertibility(identity: identity, inverseOp)
