@@ -30,7 +30,6 @@ extension MagmaProtocol {
     }
 }
 
-
 public typealias LatinSquareFunction<UnderlyingSet> = ((_ a: UnderlyingSet, _ b: UnderlyingSet) -> (left: UnderlyingSet, right: UnderlyingSet))
 public typealias InvertFunction<UnderlyingSet> = ((UnderlyingSet) -> UnderlyingSet)
 

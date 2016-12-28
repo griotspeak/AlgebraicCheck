@@ -10,5 +10,4 @@ import XCTest
 @testable import AlgebraicCheck
 
 class AlgebraicCheckTests: XCTestCase {
-
 }

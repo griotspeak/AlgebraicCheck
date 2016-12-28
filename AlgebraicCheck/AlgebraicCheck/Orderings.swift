@@ -32,7 +32,6 @@ public struct HomogenousRelation<UnderlyingSet : Arbitrary> : HomogenousRelation
     }
 }
 
-
 public struct GenericOrderedStructure<Relation : HomogenousRelationProtocol> : OrderedStructure
 where Relation.Codomain : Arbitrary {
 

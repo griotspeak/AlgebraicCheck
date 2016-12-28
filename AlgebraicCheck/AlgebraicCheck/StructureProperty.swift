@@ -64,10 +64,10 @@ extension StructureProperty where Operation : ClosedBinary {
             return createCommutativityProperty(operation)
         case let .idempotence(element):
             return createIdempotenceProperty(operation, element: element)
-        case let .leftIdentity(id):
-            return createLeftIdentityProperty(operation, identity: id)
-        case let .rightIdentity(id):
-            return createRightIdentityProperty(operation, identity: id)
+        case let .leftIdentity(element):
+            return createLeftIdentityProperty(operation, leftIdentity: element)
+        case let .rightIdentity(element):
+            return createRightIdentityProperty(operation, rightIdentity: element)
         case let .identity(id):
             return createIdentityProperty(operation, identity: id)
         case let .invertibility(identity: id, fn):
@@ -87,14 +87,14 @@ extension StructureProperty where Operation : ClosedBinary {
         let property = forAll { (i: Operation.Codomain, j: Operation.Codomain, k: Operation.Codomain) in
             operation.function(operation.function(i, j), k) == operation.function(i, operation.function(j, k))
         }
-        return [("associative", property)]
+        return [("operation over \(Operation.Codomain.self) is associative", property)]
     }
 
     func createCommutativityProperty(_ operation: Operation) -> SwiftCheckProperties {
         let property = forAll { (i: Operation.Codomain, j: Operation.Codomain) in
             operation.function(i, j) == operation.function(j, i)
         }
-        return [("commutative", property)]
+        return [("operation over \(Operation.Codomain.self) is commutative", property)]
     }
 
     func createIdempotenceProperty(_ operation: Operation, element: Operation.Codomain) -> SwiftCheckProperties {
@@ -103,28 +103,28 @@ extension StructureProperty where Operation : ClosedBinary {
                 $0 && (operation.function(element, $1) == element)
             }
         }
-        return [("idempotence", property)]
+        return [("operation over \(Operation.Codomain.self) is idempotent", property)]
     }
 
-    func createLeftIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
+    func createLeftIdentityProperty(_ operation: Operation, leftIdentity: Operation.Codomain) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(identity, x) == x
+            return operation.function(leftIdentity, x) == x
         }
-        return [("left identity", property)]
+        return [("operation over \(Operation.Codomain.self) has left identity element \(leftIdentity)", property)]
     }
 
-    func createRightIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
+    func createRightIdentityProperty(_ operation: Operation, rightIdentity: Operation.Codomain) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(x, identity) == x
+            return operation.function(x, rightIdentity) == x
         }
-        return [("right  identity", property)]
+        return [("operation over \(Operation.Codomain.self) has right identity element \(rightIdentity)", property)]
     }
 
     func createIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
             return operation.function(x, identity) == x && operation.function(identity, x) == x
         }
-        return [("identity", property)]
+        return [("operation over \(Operation.Codomain.self) has identity element \(identity)", property)]
     }
 
     func createInverseProperty(_ operation: Operation, identity: Operation.Codomain, inverseOp: @escaping (Operation.Codomain) -> Operation.Codomain) -> SwiftCheckProperties {
@@ -132,7 +132,7 @@ extension StructureProperty where Operation : ClosedBinary {
             let b = inverseOp(a)
             return (operation.function(a, b) == identity) && (operation.function(b, a) == identity)
         }
-        return [("Invertible", property)]
+        return [("operation over \(Operation.Codomain.self) has an inverse \(identity)", property)]
     }
 
     func createLatinSquareProperty(_ operation: Operation, latinSquare: LatinSquareFunction<Operation.Codomain>) -> SwiftCheckProperties {
@@ -155,8 +155,8 @@ extension StructureProperty where Operation : ClosedBinary {
         }
 
         return  [
-            ("Latin square property 'x' (a: \(a), b: \(b))", propertyX),
-            ("Latin square property 'y' (a: \(a), b: \(b))", propertyY)
+            ("operation over \(Operation.Codomain.self) latin square property ('left') (a: \(a), b: \(b))", propertyX),
+            ("operation over \(Operation.Codomain.self) latin square property ('right') 'y' (a: \(a), b: \(b))", propertyY)
         ]
     }
 
@@ -165,20 +165,20 @@ extension StructureProperty where Operation : ClosedBinary {
         let property = forAll { (x: Operation.Codomain) in
             return operation.function(leftAbsorbingElement, x) == leftAbsorbingElement
         }
-        return [("left absorbing element", property)]
+        return [("operation over \(Operation.Codomain.self) has left absorbing element \(leftAbsorbingElement)", property)]
     }
 
     func createRightAbsorbingElementProperty(_ operation: Operation, rightAbsorbingElement: Operation.Codomain) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
             return operation.function(x, rightAbsorbingElement) == rightAbsorbingElement
         }
-        return [("right absorbing element", property)]
+        return [("operation over \(Operation.Codomain.self) has right absorbing element \(rightAbsorbingElement)", property)]
     }
 
     func createAbsorbingElementProperty(_ operation: Operation, absorbingElement: Operation.Codomain) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
             return operation.function(x, absorbingElement) == x && operation.function(absorbingElement, x) == absorbingElement
         }
-        return [("absorbing element", property)]
+        return [("operation over \(Operation.Codomain.self) has an absorbing element \(absorbingElement)", property)]
     }
 }
