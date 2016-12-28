@@ -13,14 +13,14 @@ public struct ClosedBinaryOperation<UnderlyingSet : Equatable & Arbitrary> : Clo
     }
 }
 
-public protocol MagmaType {
+public protocol MagmaProtocol {
     associatedtype OpType : ClosedBinary
     var operation: OpType { get }
     var algebraicProperties: [StructureProperty<OpType>] { get }
     var concretizedProperties: [(description: String, Property)] { get }
 }
 
-extension MagmaType {
+extension MagmaProtocol {
     public var concretizedProperties: [(description: String, Property)] {
         return algebraicProperties.flatMap {
             $0.concretize(with: operation)
@@ -52,7 +52,7 @@ where UnderlyingSet : Arbitrary & Equatable, Operation : ClosedBinary, Operation
     }
 }
 
-public struct Magma<Operation : ClosedBinary> : MagmaType {
+public struct Magma<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
 
@@ -65,7 +65,7 @@ public struct Magma<Operation : ClosedBinary> : MagmaType {
     }
 }
 
-public struct Semigroup<Operation : ClosedBinary> : MagmaType {
+public struct Semigroup<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
 
@@ -78,7 +78,7 @@ public struct Semigroup<Operation : ClosedBinary> : MagmaType {
 }
 
 
-public struct Quasigroup<Operation : ClosedBinary> : MagmaType {
+public struct Quasigroup<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [StructureProperty<Operation>]
@@ -89,7 +89,7 @@ public struct Quasigroup<Operation : ClosedBinary> : MagmaType {
     }
 }
 
-public struct Loop<Operation : ClosedBinary> : MagmaType {
+public struct Loop<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [StructureProperty<Operation>]
@@ -103,7 +103,7 @@ public struct Loop<Operation : ClosedBinary> : MagmaType {
     }
 }
 
-struct Monoid<Operation : ClosedBinary> : MagmaType {
+struct Monoid<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [StructureProperty<Operation>]
@@ -117,7 +117,7 @@ struct Monoid<Operation : ClosedBinary> : MagmaType {
     }
 }
 
-public struct Group<Operation : ClosedBinary> : MagmaType {
+public struct Group<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [StructureProperty<Operation>]
@@ -133,7 +133,7 @@ public struct Group<Operation : ClosedBinary> : MagmaType {
     }
 }
 
-public struct AbelianGroup<Operation : ClosedBinary> : MagmaType {
+public struct AbelianGroup<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
     public let algebraicProperties: [StructureProperty<Operation>]

@@ -2,7 +2,7 @@ import SwiftCheck
 import AlgebraicCheck
 
 func reportThat<Structure, UnderlyingSet>(_ underlyingSet: UnderlyingSet.Type, forms structure: Structure)
-    where Structure : AlgebraicStructure, UnderlyingSet : Arbitrary & Equatable {
+    where Structure : MagmaProtocol, UnderlyingSet : Arbitrary & Equatable {
         for (message, property) in structure.concretizedProperties {
             reportProperty(message) <- property
         }
