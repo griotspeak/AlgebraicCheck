@@ -38,13 +38,11 @@ public typealias InvertFunction<UnderlyingSet> = ((UnderlyingSet) -> UnderlyingS
 public struct Magma<Operation : ClosedBinary> : MagmaProtocol {
     public typealias OpType = Operation
     public let operation: Operation
+    public let algebraicProperties: [StructureProperty<Operation>]
 
     public init(operation: Operation) {
         self.operation = operation
-    }
-
-    public var algebraicProperties: [StructureProperty<Operation>] {
-        return []
+        self.algebraicProperties = [.totality]
     }
 }
 
@@ -56,7 +54,7 @@ public struct Semigroup<Operation : ClosedBinary> : MagmaProtocol {
         self.operation = operation
     }
     public var algebraicProperties: [StructureProperty<Operation>] {
-        return [StructureProperty.associativity]
+        return [.totality, .associativity]
     }
 }
 
@@ -68,8 +66,9 @@ public struct Monoid<Operation : ClosedBinary> : MagmaProtocol {
     public init(operation: Operation, identity: Operation.Codomain) {
         self.operation = operation
         self.algebraicProperties = [
-            StructureProperty.associativity,
-            StructureProperty.identity(identity)
+            .totality,
+            .associativity,
+            .identity(identity)
         ]
     }
 }
@@ -81,7 +80,7 @@ public struct Quasigroup<Operation : ClosedBinary> : MagmaProtocol {
 
     public init(operation: Operation, latinSquare: @escaping LatinSquareFunction<Operation.Codomain>) {
         self.operation = operation
-        self.algebraicProperties = [StructureProperty<Operation>.latinSquare(latinSquare)]
+        self.algebraicProperties = [.totality, .latinSquare(latinSquare)]
     }
 }
 
@@ -93,8 +92,9 @@ public struct Loop<Operation : ClosedBinary> : MagmaProtocol {
     public init(operation: Operation, identity: Operation.Codomain, latinSquare: @escaping LatinSquareFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
-            StructureProperty.identity(identity),
-            StructureProperty<Operation>.latinSquare(latinSquare)
+            .totality,
+            .identity(identity),
+            .latinSquare(latinSquare)
         ]
     }
 }
@@ -107,9 +107,10 @@ public struct Group<Operation : ClosedBinary> : MagmaProtocol {
     public init(operation: Operation, identity: Operation.Codomain, inverseOp: @escaping InvertFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
-            StructureProperty.associativity,
-            StructureProperty.identity(identity),
-            StructureProperty.invertibility(identity: identity, inverseOp)
+            .totality,
+            .associativity,
+            .identity(identity),
+            .invertibility(identity: identity, inverseOp)
         ]
     }
 }
@@ -122,10 +123,11 @@ public struct AbelianGroup<Operation : ClosedBinary> : MagmaProtocol {
     public init(operation: Operation, identity: Operation.Codomain, inverseOp: @escaping InvertFunction<Operation.Codomain>) {
         self.operation = operation
         self.algebraicProperties = [
-            StructureProperty.commutativity,
-            StructureProperty.associativity,
-            StructureProperty.identity(identity),
-            StructureProperty.invertibility(identity: identity, inverseOp)
+            .totality,
+            .commutativity,
+            .associativity,
+            .identity(identity),
+            .invertibility(identity: identity, inverseOp)
         ]
     }
 }
@@ -137,9 +139,10 @@ public struct Semilattice<Operation : ClosedBinary> : MagmaProtocol {
     public init(operation: Operation, idempotentElement: Operation.Codomain) {
         self.operation = operation
         self.algebraicProperties = [
-            StructureProperty.associativity,
-            StructureProperty.commutativity,
-            StructureProperty.idempotence(idempotentElement)
+            .totality,
+            .associativity,
+            .commutativity,
+            .idempotence(idempotentElement)
         ]
     }
 }

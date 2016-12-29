@@ -36,4 +36,12 @@ class OrderTests : XCTestCase {
     func testReflexive() {
         properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [.reflexive]))
     }
+
+    func testLeftEuclidian() {
+        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [RelationProperty.leftEuclidian]))
+    }
+
+    func testRightEuclidian() {
+        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [RelationProperty.rightEuclidian]))
+    }
 }
