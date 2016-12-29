@@ -39,9 +39,15 @@ class OrderTests : XCTestCase {
 
     func testLeftEuclidian() {
         properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [RelationProperty.leftEuclidian]))
+        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [RelationProperty.leftEuclidian]))
     }
 
     func testRightEuclidian() {
         properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [RelationProperty.rightEuclidian]))
+        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [RelationProperty.rightEuclidian]))
     }
+}
+
+fileprivate func haveEqualParity(_ lhs: Int, _ rhs: Int) -> Bool {
+    return (lhs % 2 == 0) == (rhs % 2 == 0)
 }
