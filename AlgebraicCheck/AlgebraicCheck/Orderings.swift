@@ -51,6 +51,14 @@ extension Arbitrary {
     }
 }
 
+extension Arbitrary where Self : Equatable {
+
+    public static func form(operation: @escaping (Self, Self) -> Self, algebraicProperties: [StructureProperty<ClosedBinaryOperation<Self>>]) -> GenericStructure<ClosedBinaryOperation<Self>> {
+
+        return GenericStructure(operation: ClosedBinaryOperation<Self>(operation), algebraicProperties: algebraicProperties)
+    }
+}
+
 public struct PartialOrder<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation

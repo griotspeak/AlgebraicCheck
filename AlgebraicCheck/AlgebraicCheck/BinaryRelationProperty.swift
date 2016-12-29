@@ -38,23 +38,23 @@ where Relation : BinaryRelationProtocol/*, Relation.Domain : Arbitrary*/ {
     public var description: String {
         switch self {
         case .total:
-            return "total"
+            return "is total"
         case .antisymmetric:
-            return "antisymmetric"
+            return "is antisymmetric"
         case .symmetric:
-            return "symmetric"
+            return "is symmetric"
         case .asymmetric:
-            return "asymmetric"
+            return "is asymmetric"
         case .transitive:
-            return "transitive"
+            return "is transitive"
         case .reflexive:
-            return "reflexive"
+            return "is reflexive"
         case .irreflexive:
-            return "irreflexive"
+            return "is irreflexive"
         case .leftEuclidian:
-            return "left euclidian"
+            return "is left euclidian"
         case .rightEuclidian:
-            return "right euclidian"
+            return "is right euclidian"
         }
     }
 }
@@ -87,7 +87,8 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
         let property = forAll { (a: Relation.Codomain, b: Relation.Codomain) in
             return relation.relates(a, b) || relation.relates(b, a)
         }
-        return [("total", property)]
+
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 
 
@@ -98,14 +99,14 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
             }
         }
 
-        return [("asymmetric", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 
     func createSymmetricProperty(_ relation: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain, b: Relation.Codomain) in
             relation.relates(a, b) == relation.relates(b, a)
         }
-        return [("symmetric", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 
 
@@ -117,7 +118,7 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
                 return equivalence(i, j) == false
             }
         }
-        return [("antisymmetric", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 
     func createTransitiveProperty(_ relation: Relation) -> SwiftCheckProperties {
@@ -128,20 +129,20 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
                 return true
             }
         }
-        return [("transitive", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
     func createReflexiveProperty(_ relation: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain) in
             relation.relates(a, a)
         }
-        return [("reflexive", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 
     func createIrreflexiveProperty(_ relation: Relation) -> SwiftCheckProperties {
         let property = forAll { (a: Relation.Codomain) in
             false == relation.relates(a, a)
         }
-        return [("irreflexive", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 
     func creatLeftEuclidianProperty(_ relation: Relation) -> SwiftCheckProperties {
@@ -152,7 +153,7 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
                 return true
             }
         }
-        return [("left euclidian", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 
     func creatRightEuclidianProperty(_ relation: Relation) -> SwiftCheckProperties {
@@ -163,6 +164,6 @@ extension RelationProperty where Relation : HomogenousRelationProtocol, Relation
                 return true
             }
         }
-        return [("right euclidian", property)]
+        return [("relation over \(Relation.Codomain.self) \(self)", property)]
     }
 }

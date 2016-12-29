@@ -20,4 +20,20 @@ class OrderTests : XCTestCase {
     func testTotalOrder() {
         properties(Int.self, has: TotalOrder(relation: HRel<Int>(<=), equivalence: ==))
     }
+
+    func testAsymmetric() {
+        properties(Int.self, has: Int.form(relation: <, algebraicProperties: [.asymmetric]))
+    }
+
+    func testIrreflexive() {
+        properties(Int.self, has: Int.form(relation: <, algebraicProperties: [.irreflexive]))
+    }
+
+    func testSymmetric() {
+        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [.symmetric]))
+    }
+
+    func testReflexive() {
+        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [.reflexive]))
+    }
 }
