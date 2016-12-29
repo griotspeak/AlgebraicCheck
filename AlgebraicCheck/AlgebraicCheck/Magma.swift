@@ -1,3 +1,11 @@
+//
+//  Magma.swift
+//  AlgebraicCheck
+//
+//  Created by TJ Usiyan on 2016/12/28.
+//  Copyright © 2016 Buttons and Lights LLC. All rights reserved.
+//
+
 import SwiftCheck
 
 public protocol ClosedBinary {
@@ -15,13 +23,12 @@ public struct ClosedBinaryOperation<UnderlyingSet : Equatable & Arbitrary> : Clo
     }
 }
 
-public protocol MagmaProtocol {
+public protocol MagmaProtocol : CheckableStructure {
     associatedtype OpType : ClosedBinary
     typealias UnderlyingSet = OpType.Codomain
 
     var operation: OpType { get }
     var algebraicProperties: [StructureProperty<OpType>] { get }
-    var concretizedProperties: [(description: String, Property)] { get }
 }
 
 extension MagmaProtocol {

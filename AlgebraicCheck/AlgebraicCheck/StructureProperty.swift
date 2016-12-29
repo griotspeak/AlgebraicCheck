@@ -22,6 +22,7 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
     case leftAbsorbingElement(Operation.Codomain)
     case rightAbsorbingElement(Operation.Codomain)
     case absorbingElement(Operation.Codomain)
+    case distributive(over: String, addition: (Operation.Codomain, Operation.Codomain) -> Operation.Codomain)
 
     public var description: String {
         switch self {
@@ -49,6 +50,8 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
             return "has right absorbing element"
         case .absorbingElement:
             return "has absorbing element"
+        case .distributive:
+            return "is distributive"
         }
     }
 }
@@ -80,6 +83,8 @@ extension StructureProperty where Operation : ClosedBinary {
             return createRightAbsorbingElementProperty(operation, rightAbsorbingElement: value)
         case let .absorbingElement(value):
             return createAbsorbingElementProperty(operation, absorbingElement: value)
+        case let .distributive(additionName, addition):
+            return createDistributiveProperty(operation, over: additionName, otherOperation: addition)
         }
     }
 
@@ -188,5 +193,14 @@ extension StructureProperty where Operation : ClosedBinary {
             return operation.function(x, absorbingElement) == absorbingElement && operation.function(absorbingElement, x) == absorbingElement
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(absorbingElement)", property)]
+    }
+
+    func createDistributiveProperty(_ operation: Operation, over additionDescription: String, otherOperation addition: @escaping (Operation.Codomain, Operation.Codomain) -> Operation.Codomain) -> SwiftCheckProperties {
+        let property = forAll { (x: Operation.Codomain, y: Operation.Codomain, z: Operation.Codomain) in
+            let lhs = operation.function(x, addition(y, z)) // x(y + z)
+            let rhs = addition(operation.function(x, y), operation.function(x, z)) // xy + xz
+            return lhs == rhs
+        }
+        return [("operation over \(Operation.Codomain.self) \(self) over \(additionDescription)", property)]
     }
 }

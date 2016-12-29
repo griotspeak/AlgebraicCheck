@@ -8,11 +8,14 @@
 
 import SwiftCheck
 
-public protocol OrderedStructure {
+public protocol CheckableStructure {
+    var concretizedProperties: [(description: String, Property)] { get }
+}
+
+public protocol OrderedStructure : CheckableStructure {
     associatedtype OpType : HomogenousRelationProtocol
     var relation: OpType { get }
     var algebraicProperties: [RelationProperty<OpType>] { get }
-    var concretizedProperties: [(description: String, Property)] { get }
 }
 
 extension OrderedStructure where OpType.Codomain : Arbitrary {
