@@ -31,6 +31,7 @@ class OrderTests : XCTestCase {
 
     func testSymmetric() {
         properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [.symmetric]))
+        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [.symmetric]))
     }
 
     func testReflexive() {
