@@ -35,16 +35,17 @@ class OrderTests : XCTestCase {
 
     func testReflexive() {
         properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [.reflexive]))
+        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [.reflexive]))
     }
 
     func testLeftEuclidian() {
-        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [RelationProperty.leftEuclidian]))
-        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [RelationProperty.leftEuclidian]))
+        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [.leftEuclidian]))
+        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [.leftEuclidian]))
     }
 
     func testRightEuclidian() {
-        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [RelationProperty.rightEuclidian]))
-        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [RelationProperty.rightEuclidian]))
+        properties(Int.self, has: Int.form(relation: ==, algebraicProperties: [.rightEuclidian]))
+        properties(Int.self, has: Int.form(relation: haveEqualParity, algebraicProperties: [.rightEuclidian]))
     }
 }
 
