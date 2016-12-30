@@ -13,6 +13,7 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
     case totality
     case associativity
     case commutativity
+    case noncommutative(commutativityCounterExample: (Operation.Codomain, Operation.Codomain))
     case idempotence(Operation.Codomain)
     case leftIdentity(Operation.Codomain)
     case rightIdentity(Operation.Codomain)
@@ -32,6 +33,8 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
             return "is associative"
         case .commutativity:
             return "is commutative"
+        case .noncommutative:
+            return "is not commutative"
         case .idempotence:
             return "has idempotent element"
         case .leftIdentity:
@@ -65,6 +68,8 @@ extension StructureProperty where Operation : ClosedBinary {
             return createAssociativityProperty(operation)
         case .commutativity:
             return createCommutativityProperty(operation)
+        case let .noncommutative(example):
+            return createNoncommutativeProperty(operation, example: example)
         case let .idempotence(element):
             return createIdempotenceProperty(operation, element: element)
         case let .leftIdentity(element):
@@ -99,6 +104,13 @@ extension StructureProperty where Operation : ClosedBinary {
     func createAssociativityProperty(_ operation: Operation) -> SwiftCheckProperties {
         let property = forAll { (i: Operation.Codomain, j: Operation.Codomain, k: Operation.Codomain) in
             operation.function(operation.function(i, j), k) == operation.function(i, operation.function(j, k))
+        }
+        return [("operation over \(Operation.Codomain.self) \(self)", property)]
+    }
+
+    func createNoncommutativeProperty(_ operation: Operation, example: (Operation.Codomain, Operation.Codomain)) -> SwiftCheckProperties {
+        let property = forAll { (_: Int) in
+            operation.function(example.0, example.1) != operation.function(example.1, example.0)
         }
         return [("operation over \(Operation.Codomain.self) \(self)", property)]
     }
