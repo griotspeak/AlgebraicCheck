@@ -10,7 +10,7 @@ import XCTest
 import SwiftCheck
 import AlgebraicCheck
 
-typealias HRel<Element : Equatable & Arbitrary> = HomogenousRelation<Element>
+typealias HRel<Element : Arbitrary> = HomogenousRelation<Element>
 
 class OrderTests : XCTestCase {
     func testPartialOrder() {

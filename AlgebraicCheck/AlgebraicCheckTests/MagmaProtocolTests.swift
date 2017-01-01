@@ -10,7 +10,7 @@ import XCTest
 import SwiftCheck
 import AlgebraicCheck
 
-typealias CBinOp<Element : Equatable & Arbitrary> = ClosedBinaryOperation<Element>
+typealias CBinOp<Element : Arbitrary> = ClosedBinaryOperation<Element>
 
 class MagmaProtocolTests : XCTestCase {
     func testMagma() {

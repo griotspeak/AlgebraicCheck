@@ -8,8 +8,10 @@
 
 import SwiftCheck
 
+public typealias RelationFunction<Element> = (Element, Element) -> Bool
+
 public enum StructureProperty<Operation> : CustomStringConvertible
-where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
+where Operation : ClosedBinary, Operation.Codomain : Arbitrary {
     case totality
     case associativity
     case commutativity
@@ -60,36 +62,36 @@ where Operation : ClosedBinary, Operation.Codomain : Arbitrary & Equatable {
 }
 
 extension StructureProperty where Operation : ClosedBinary {
-    internal func concretize(with operation: Operation) -> SwiftCheckProperties {
+    internal func concretize(with operation: Operation, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         switch self {
         case .totality:
             return createTotalProperty(operation)
         case .associativity:
-            return createAssociativityProperty(operation)
+            return createAssociativityProperty(operation, equivalence: equivalence)
         case .commutativity:
-            return createCommutativityProperty(operation)
+            return createCommutativityProperty(operation, equivalence: equivalence)
         case let .noncommutative(example):
-            return createNoncommutativeProperty(operation, example: example)
+            return createNoncommutativeProperty(operation, example: example, equivalence: equivalence)
         case let .idempotence(element):
-            return createIdempotenceProperty(operation, element: element)
+            return createIdempotenceProperty(operation, element: element, equivalence: equivalence)
         case let .leftIdentity(element):
-            return createLeftIdentityProperty(operation, leftIdentity: element)
+            return createLeftIdentityProperty(operation, leftIdentity: element, equivalence: equivalence)
         case let .rightIdentity(element):
-            return createRightIdentityProperty(operation, rightIdentity: element)
+            return createRightIdentityProperty(operation, rightIdentity: element, equivalence: equivalence)
         case let .identity(id):
-            return createIdentityProperty(operation, identity: id)
+            return createIdentityProperty(operation, identity: id, equivalence: equivalence)
         case let .invertibility(identity: id, fn):
-            return createInverseProperty(operation, identity: id, inverseOp: fn)
+            return createInverseProperty(operation, identity: id, inverseOp: fn, equivalence: equivalence)
         case let .latinSquare(fn):
-            return createLatinSquareProperty(operation, latinSquare: fn)
+            return createLatinSquareProperty(operation, latinSquare: fn, equivalence: equivalence)
         case let .leftAbsorbingElement(value):
-            return createLeftAbsorbingElementProperty(operation, leftAbsorbingElement: value)
+            return createLeftAbsorbingElementProperty(operation, leftAbsorbingElement: value, equivalence: equivalence)
         case let .rightAbsorbingElement(value):
-            return createRightAbsorbingElementProperty(operation, rightAbsorbingElement: value)
+            return createRightAbsorbingElementProperty(operation, rightAbsorbingElement: value, equivalence: equivalence)
         case let .absorbingElement(value):
-            return createAbsorbingElementProperty(operation, absorbingElement: value)
+            return createAbsorbingElementProperty(operation, absorbingElement: value, equivalence: equivalence)
         case let .distributive(additionName, addition):
-            return createDistributiveProperty(operation, over: additionName, otherOperation: addition)
+            return createDistributiveProperty(operation, over: additionName, otherOperation: addition, equivalence: equivalence)
         }
     }
 
@@ -101,81 +103,91 @@ extension StructureProperty where Operation : ClosedBinary {
         return [("operation over \(Operation.Codomain.self) \(self)", property)]
     }
 
-    func createAssociativityProperty(_ operation: Operation) -> SwiftCheckProperties {
+    func createAssociativityProperty(_ operation: Operation, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (i: Operation.Codomain, j: Operation.Codomain, k: Operation.Codomain) in
-            operation.function(operation.function(i, j), k) == operation.function(i, operation.function(j, k))
+            let lhs = operation.function(operation.function(i, j), k)
+            let rhs = operation.function(i, operation.function(j, k))
+            return equivalence(lhs, rhs)
+
         }
         return [("operation over \(Operation.Codomain.self) \(self)", property)]
     }
 
-    func createNoncommutativeProperty(_ operation: Operation, example: (Operation.Codomain, Operation.Codomain)) -> SwiftCheckProperties {
+    func createNoncommutativeProperty(_ operation: Operation, example: (Operation.Codomain, Operation.Codomain), equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (_: Int) in
-            operation.function(example.0, example.1) != operation.function(example.1, example.0)
+            let lhs = operation.function(example.0, example.1)
+            let rhs = operation.function(example.1, example.0)
+            return false == equivalence(lhs, rhs)
         }
         return [("operation over \(Operation.Codomain.self) \(self)", property)]
     }
 
-    func createCommutativityProperty(_ operation: Operation) -> SwiftCheckProperties {
+    func createCommutativityProperty(_ operation: Operation, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (i: Operation.Codomain, j: Operation.Codomain) in
-            operation.function(i, j) == operation.function(j, i)
+            let lhs = operation.function(i, j)
+            let rhs = operation.function(j, i)
+            return equivalence(lhs, rhs)
         }
         return [("operation over \(Operation.Codomain.self) \(self)", property)]
     }
 
-    func createIdempotenceProperty(_ operation: Operation, element: Operation.Codomain) -> SwiftCheckProperties {
+    func createIdempotenceProperty(_ operation: Operation, element: Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (count: Int) in
             return Array(repeating: element, count: abs(count) % 125).reduce(true) {
-                $0 && (operation.function(element, $1) == element)
+                $0 && equivalence(operation.function(element, $1), element)
             }
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(element)", property)]
     }
 
-    func createLeftIdentityProperty(_ operation: Operation, leftIdentity: Operation.Codomain) -> SwiftCheckProperties {
+    func createLeftIdentityProperty(_ operation: Operation, leftIdentity: Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(leftIdentity, x) == x
+            return equivalence(operation.function(leftIdentity, x), x)
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(leftIdentity)", property)]
     }
 
-    func createRightIdentityProperty(_ operation: Operation, rightIdentity: Operation.Codomain) -> SwiftCheckProperties {
+    func createRightIdentityProperty(_ operation: Operation, rightIdentity: Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(x, rightIdentity) == x
+            return equivalence(operation.function(x, rightIdentity), x)
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(rightIdentity)", property)]
     }
 
-    func createIdentityProperty(_ operation: Operation, identity: Operation.Codomain) -> SwiftCheckProperties {
+    func createIdentityProperty(_ operation: Operation, identity: Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(x, identity) == x && operation.function(identity, x) == x
+
+            return equivalence(operation.function(x, identity), x) && equivalence(operation.function(identity, x), x)
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(identity)", property)]
     }
 
-    func createInverseProperty(_ operation: Operation, identity: Operation.Codomain, inverseOp: @escaping (Operation.Codomain) -> Operation.Codomain) -> SwiftCheckProperties {
+    func createInverseProperty(_ operation: Operation, identity: Operation.Codomain, inverseOp: @escaping (Operation.Codomain) -> Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (a: Operation.Codomain) in
             let b = inverseOp(a)
-            return (operation.function(a, b) == identity) && (operation.function(b, a) == identity)
+            let leftProposition = equivalence(operation.function(a, b), identity)
+            let rightProposition = equivalence(operation.function(b, a), identity)
+            return leftProposition && rightProposition
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(identity)", property)]
     }
 
-    func createLatinSquareProperty(_ operation: Operation, latinSquare: LatinSquareFunction<Operation.Codomain>) -> SwiftCheckProperties {
+    func createLatinSquareProperty(_ operation: Operation, latinSquare: LatinSquareFunction<Operation.Codomain>, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let (a, b) = (Operation.Codomain.arbitrary.generate, Operation.Codomain.arbitrary.generate)
         let (x, y) = latinSquare(a, b)
         let propertyX = forAll { (j: Operation.Codomain) in
-            if j == x {
-                return operation.function(a, j) == b
+            if equivalence(j, x) {
+                return equivalence(operation.function(a, j), b)
             } else {
-                return operation.function(a, j) != b
+                return false == equivalence(operation.function(a, j), b)
             }
         }
 
         let propertyY = forAll { (j: Operation.Codomain) in
-            if j == y {
-                return operation.function(j, a) == b
+            if equivalence(j, y) {
+                return equivalence(operation.function(j, a), b)
             } else {
-                return operation.function(j, a) != b
+                return false == equivalence(operation.function(j, a), b)
             }
         }
 
@@ -186,32 +198,34 @@ extension StructureProperty where Operation : ClosedBinary {
     }
 
 
-    func createLeftAbsorbingElementProperty(_ operation: Operation, leftAbsorbingElement: Operation.Codomain) -> SwiftCheckProperties {
+    func createLeftAbsorbingElementProperty(_ operation: Operation, leftAbsorbingElement: Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(leftAbsorbingElement, x) == leftAbsorbingElement
+            return equivalence(operation.function(leftAbsorbingElement, x), leftAbsorbingElement)
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(leftAbsorbingElement)", property)]
     }
 
-    func createRightAbsorbingElementProperty(_ operation: Operation, rightAbsorbingElement: Operation.Codomain) -> SwiftCheckProperties {
+    func createRightAbsorbingElementProperty(_ operation: Operation, rightAbsorbingElement: Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(x, rightAbsorbingElement) == rightAbsorbingElement
+            return equivalence(operation.function(x, rightAbsorbingElement), rightAbsorbingElement)
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(rightAbsorbingElement)", property)]
     }
 
-    func createAbsorbingElementProperty(_ operation: Operation, absorbingElement: Operation.Codomain) -> SwiftCheckProperties {
+    func createAbsorbingElementProperty(_ operation: Operation, absorbingElement: Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain) in
-            return operation.function(x, absorbingElement) == absorbingElement && operation.function(absorbingElement, x) == absorbingElement
+            let leftProposition = equivalence(operation.function(x, absorbingElement), absorbingElement)
+            let rightProposition = equivalence(operation.function(absorbingElement, x), absorbingElement)
+            return leftProposition && rightProposition
         }
         return [("operation over \(Operation.Codomain.self) \(self): \(absorbingElement)", property)]
     }
 
-    func createDistributiveProperty(_ operation: Operation, over additionDescription: String, otherOperation addition: @escaping (Operation.Codomain, Operation.Codomain) -> Operation.Codomain) -> SwiftCheckProperties {
+    func createDistributiveProperty(_ operation: Operation, over additionDescription: String, otherOperation addition: @escaping (Operation.Codomain, Operation.Codomain) -> Operation.Codomain, equivalence: @escaping RelationFunction<Operation.Codomain>) -> SwiftCheckProperties {
         let property = forAll { (x: Operation.Codomain, y: Operation.Codomain, z: Operation.Codomain) in
             let lhs = operation.function(x, addition(y, z)) // x(y + z)
             let rhs = addition(operation.function(x, y), operation.function(x, z)) // xy + xz
-            return lhs == rhs
+            return equivalence(lhs, rhs)
         }
         return [("operation over \(Operation.Codomain.self) \(self) over \(additionDescription)", property)]
     }

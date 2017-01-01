@@ -59,6 +59,22 @@ extension Arbitrary where Self : Equatable {
     }
 }
 
+public struct Equivalence<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
+    public typealias OpType = Relation
+    public let relation: Relation
+    public let algebraicProperties: [RelationProperty<Relation>]
+
+    public init(relation: Relation, equivalence: @escaping (Relation.Codomain, Relation.Codomain) -> Bool) {
+        self.relation = relation
+        self.algebraicProperties = [
+            RelationProperty.symmetric,
+            RelationProperty.transitive,
+            RelationProperty.reflexive
+        ]
+    }
+}
+
+
 public struct PartialOrder<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation

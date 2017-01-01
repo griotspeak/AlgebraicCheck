@@ -24,12 +24,12 @@ public func properties<Structure : CheckableStructure>(structure: Structure) {
 // MARK: -
 
 public func reportThat<Structure, UnderlyingSet>(_ underlyingSet: UnderlyingSet.Type, forms structure: Structure)
-    where Structure : MagmaProtocol, UnderlyingSet : Arbitrary & Equatable {
+    where Structure : MagmaProtocol, UnderlyingSet : Arbitrary {
         report(structure: structure)
 }
 
 public func properties<Structure, UnderlyingSet>(_ underlyingSet: UnderlyingSet.Type, forms structure: Structure)
-    where Structure : MagmaProtocol, UnderlyingSet : Arbitrary & Equatable {
+    where Structure : MagmaProtocol, UnderlyingSet : Arbitrary {
         properties(structure: structure)
 }
 
