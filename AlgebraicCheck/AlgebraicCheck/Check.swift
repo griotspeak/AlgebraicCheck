@@ -36,11 +36,11 @@ public func properties<Structure, UnderlyingSet>(_ underlyingSet: UnderlyingSet.
 // MARK: -
 
 public func reportThat<Structure, UnderlyingSet>(_ underlyingSet: UnderlyingSet.Type, has relation: Structure)
-    where Structure : OrderedStructure, UnderlyingSet : Arbitrary {
+    where Structure : RelationStructure, UnderlyingSet : Arbitrary {
         report(structure: relation)
 }
 
 public func properties<Structure, UnderlyingSet>(_ underlyingSet: UnderlyingSet.Type, has relation: Structure)
-    where Structure : OrderedStructure, UnderlyingSet : Arbitrary {
+    where Structure : RelationStructure, UnderlyingSet : Arbitrary {
         properties(structure: relation)
 }

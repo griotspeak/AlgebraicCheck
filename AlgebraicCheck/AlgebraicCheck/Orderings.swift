@@ -32,7 +32,7 @@ public struct HomogenousRelation<UnderlyingSet : Arbitrary> : HomogenousRelation
     }
 }
 
-public struct GenericOrderedStructure<Relation : HomogenousRelationProtocol> : OrderedStructure
+public struct GenericRelationStructure<Relation : HomogenousRelationProtocol> : RelationStructure
 where Relation.Codomain : Arbitrary {
 
     public let relation: Relation
@@ -45,9 +45,9 @@ where Relation.Codomain : Arbitrary {
 }
 
 extension Arbitrary {
-    public static func form(relation: @escaping (Self, Self) -> Bool, algebraicProperties: [RelationProperty<HomogenousRelation<Self>>]) -> GenericOrderedStructure<HomogenousRelation<Self>> {
+    public static func form(relation: @escaping (Self, Self) -> Bool, algebraicProperties: [RelationProperty<HomogenousRelation<Self>>]) -> GenericRelationStructure<HomogenousRelation<Self>> {
 
-        return GenericOrderedStructure(relation: HomogenousRelation<Self>(relation), algebraicProperties: algebraicProperties)
+        return GenericRelationStructure(relation: HomogenousRelation<Self>(relation), algebraicProperties: algebraicProperties)
     }
 }
 
@@ -59,12 +59,12 @@ extension Arbitrary where Self : Equatable {
     }
 }
 
-public struct Equivalence<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
+public struct Equivalence<Relation : HomogenousRelationProtocol> : RelationStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation
     public let algebraicProperties: [RelationProperty<Relation>]
 
-    public init(relation: Relation, equivalence: @escaping (Relation.Codomain, Relation.Codomain) -> Bool) {
+    public init(relation: Relation) {
         self.relation = relation
         self.algebraicProperties = [
             RelationProperty.symmetric,
@@ -74,8 +74,13 @@ public struct Equivalence<Relation : HomogenousRelationProtocol> : OrderedStruct
     }
 }
 
+extension Arbitrary where Self : Equatable {
+    public static var defaultEquivalenceRelation: HomogenousRelation<Self> {
+        return HomogenousRelation(==)
+    }
+}
 
-public struct PartialOrder<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
+public struct PartialOrder<Relation : HomogenousRelationProtocol> : RelationStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation
     public let algebraicProperties: [RelationProperty<Relation>]
@@ -90,7 +95,7 @@ public struct PartialOrder<Relation : HomogenousRelationProtocol> : OrderedStruc
     }
 }
 
-public struct TotalOrder<Relation : HomogenousRelationProtocol> : OrderedStructure where Relation.Codomain : Arbitrary {
+public struct TotalOrder<Relation : HomogenousRelationProtocol> : RelationStructure where Relation.Codomain : Arbitrary {
     public typealias OpType = Relation
     public let relation: Relation
     public let algebraicProperties: [RelationProperty<Relation>]

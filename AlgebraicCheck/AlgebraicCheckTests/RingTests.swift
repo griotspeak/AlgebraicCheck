@@ -27,7 +27,7 @@ class RingTests : XCTestCase {
     }
 
 //    func testNoncommutativRing() {
-//        let addOp = CBinOp<Int?> {
+//        let addOp = CBinOp<Int?> { (optionalLhs, optionalRhs) in
 //            guard let lhs = optionalLhs,
 //                let rhs = optionalRhs else {
 //                    return nil

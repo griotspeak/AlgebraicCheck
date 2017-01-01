@@ -12,13 +12,13 @@ public protocol CheckableStructure {
     var concretizedProperties: [(description: String, Property)] { get }
 }
 
-public protocol OrderedStructure : CheckableStructure {
+public protocol RelationStructure : CheckableStructure {
     associatedtype OpType : HomogenousRelationProtocol
     var relation: OpType { get }
     var algebraicProperties: [RelationProperty<OpType>] { get }
 }
 
-extension OrderedStructure where OpType.Codomain : Arbitrary {
+extension RelationStructure where OpType.Codomain : Arbitrary {
     public var concretizedProperties: SwiftCheckProperties {
         return algebraicProperties.flatMap {
             return $0.concretize(with: relation)

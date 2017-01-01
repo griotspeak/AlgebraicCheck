@@ -33,6 +33,8 @@
 		32701FCB1E1195CE00BF2A75 /* BinaryRelationProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701FC91E1195CE00BF2A75 /* BinaryRelationProperty.swift */; };
 		32701FD11E12C8B600BF2A75 /* Orderings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701FD01E12C8B600BF2A75 /* Orderings.swift */; };
 		32701FD21E12C8B600BF2A75 /* Orderings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32701FD01E12C8B600BF2A75 /* Orderings.swift */; };
+		32E8782D1E198CFA00926ED0 /* RelationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E8782C1E198CFA00926ED0 /* RelationTests.swift */; };
+		32E8782E1E198CFA00926ED0 /* RelationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E8782C1E198CFA00926ED0 /* RelationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +130,7 @@
 		32701FB01E11910900BF2A75 /* SwiftCheck.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftCheck.xcodeproj; path = ../Carthage/Checkouts/SwiftCheck/SwiftCheck.xcodeproj; sourceTree = "<group>"; };
 		32701FC91E1195CE00BF2A75 /* BinaryRelationProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryRelationProperty.swift; sourceTree = "<group>"; };
 		32701FD01E12C8B600BF2A75 /* Orderings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Orderings.swift; sourceTree = "<group>"; };
+		32E8782C1E198CFA00926ED0 /* RelationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RelationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,8 +196,8 @@
 				3212631C1E14419F001368D2 /* Check.swift */,
 				323B7B651E117EEC003F65B2 /* Info.plist */,
 				32701F9F1E118DFE00BF2A75 /* Magma.swift */,
-				321263291E14D543001368D2 /* Ring.swift */,
 				32701FD01E12C8B600BF2A75 /* Orderings.swift */,
+				321263291E14D543001368D2 /* Ring.swift */,
 				32701F9D1E118DFE00BF2A75 /* StructureProperty.swift */,
 			);
 			path = AlgebraicCheck;
@@ -209,6 +212,7 @@
 				321263151E144122001368D2 /* MagmaProtocolTests.swift */,
 				3247B47F1E15830400119221 /* RingTests.swift */,
 				321263211E145035001368D2 /* OrderTests.swift */,
+				32E8782C1E198CFA00926ED0 /* RelationTests.swift */,
 			);
 			path = AlgebraicCheckTests;
 			sourceTree = "<group>";
@@ -489,6 +493,7 @@
 				321263161E144122001368D2 /* MagmaProtocolTests.swift in Sources */,
 				323B7B701E117EEC003F65B2 /* AlgebraicCheckTests.swift in Sources */,
 				3247B4801E15830400119221 /* RingTests.swift in Sources */,
+				32E8782D1E198CFA00926ED0 /* RelationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +519,7 @@
 				321263171E144122001368D2 /* MagmaProtocolTests.swift in Sources */,
 				32701F9B1E118DB400BF2A75 /* AlgebraicCheckTests.swift in Sources */,
 				3247B4811E15830400119221 /* RingTests.swift in Sources */,
+				32E8782E1E198CFA00926ED0 /* RelationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
